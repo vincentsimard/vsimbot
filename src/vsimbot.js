@@ -3,41 +3,29 @@
 'use strict';
 
 var irc = require('irc');
+var fs = require('fs');
+var nconf = require('nconf');
 
-// Configuration
-var config = {
-  server: 'irc.twitch.tv',
-  nick: 'vsimbot',
-  options: {
-    channels: ['#vsim'],
-    userName: 'vsimbot',
-    realName: 'vsimbot',
-    
-    port: 6667,
-    debug: false,
-    showErrors: false,
-    autoRejoin: true,
-    autoConnect: false,
-    secure: false,
-    selfSigned: false,
-    certExpired: false,
-    floodProtection: true,
-    floodProtectionDelay: 1000,
-    sasl: false,
-    stripColors: false,
-    channelPrefixes: "&#",
-    messageSplit: 512
-  }
-};
+var config = nconf
+  .argv()
+  .env()
+  .file({ file: 'config.json' })
+  .get();
 
-var bot = new irc.Client(config.server, config.nick, config.options);
+var bot = new irc.Client(config.server, config.userName, config);
 
 bot.connect(function() {
-  console.log('%s connected.\n', config.nick);
+  console.log('connected.');
 });
 
 bot.addListener('connect', function() {
-  console.log('%s connecting...', config.nick);
+  process.stdout.write('*** connecting to ' + config.server + '... ');
+});
+
+bot.addListener('join', function (channel, nick, message) {
+  if (nick !== config.userName) { return; }
+
+  console.log('*** joined %s', channel);
 });
 
 bot.addListener('error', function(message) {
