@@ -14,24 +14,50 @@ var config = nconf
 
 var bot = new irc.Client(config.server, config.userName, config);
 
-bot.connect(function() {
-  console.log('connected.');
-});
 
-bot.addListener('connect', function() {
+
+var isThisPatrick = function(from, to, message) {
+  var messageMatch = message.match(/^is this/i);
+  
+  if (!to.match(/^[#&]/)) { return; }
+  if (!messageMatch) { return; }
+  
+  bot.say(to, 'No, this is Patrick! KevinTurtle');
+};
+
+
+
+var printError = function(message) {
+  console.error('ERROR: %s: %s', message.command, message.args.join(' '));
+};
+
+var printConnect = function() {
   process.stdout.write('*** connecting to ' + config.server + '... ');
-});
+};
 
-bot.addListener('join', function (channel, nick, message) {
+var printJoin = function (channel, nick, message) {
   if (nick !== config.userName) { return; }
 
   console.log('*** joined %s', channel);
+};
+
+
+
+// Handle stdin
+process.openStdin().on('data', function(chunk) {
+  console.log('' + chunk);
 });
 
-bot.addListener('error', function(message) {
-  console.error('ERROR: %s: %s', message.command, message.args.join(' '));
-});
 
-bot.addListener('message#vsim', function (from, message) {
-  console.log('<%s> %s', from, message);
-});
+
+bot.connect(function() { console.log('connected.'); });
+
+bot.addListener('connect', printConnect);
+bot.addListener('join', printJoin);
+bot.addListener('error', printError);
+
+bot.addListener('message', isThisPatrick);
+
+
+
+// @TODO: Guess ICC handles real names
