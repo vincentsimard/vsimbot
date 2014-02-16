@@ -12,11 +12,12 @@ var config = {
     channels: ['#vsim'],
     userName: 'vsimbot',
     realName: 'vsimbot',
+    
     port: 6667,
-    debug: true,
+    debug: false,
     showErrors: false,
     autoRejoin: true,
-    autoConnect: true,
+    autoConnect: false,
     secure: false,
     selfSigned: false,
     certExpired: false,
@@ -31,14 +32,18 @@ var config = {
 
 var bot = new irc.Client(config.server, config.nick, config.options);
 
+bot.connect(function() {
+  console.log('%s connected.\n', config.nick);
+});
+
+bot.addListener('connect', function() {
+  console.log('%s connecting...', config.nick);
+});
+
 bot.addListener('error', function(message) {
   console.error('ERROR: %s: %s', message.command, message.args.join(' '));
 });
 
 bot.addListener('message#vsim', function (from, message) {
   console.log('<%s> %s', from, message);
-});
-
-bot.addListener('raw', function(message) {
-  console.log(message);
 });
