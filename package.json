@@ -1,0 +1,26 @@
+{
+  "name": "vsimbot",
+  "version": "0.0.0",
+  "description": "IRC bot",
+  "main": "src/vsimbot.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vincentsimard/vsimbot"
+  },
+  "keywords": [
+    "bot",
+    "irc"
+  ],
+  "author": "Vincent Simard",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/vincentsimard/vsimbot/issues"
+  },
+  "homepage": "https://github.com/vincentsimard/vsimbot",
+  "dependencies": {
+    "irc": "~0.3.6"
+  }
+}
