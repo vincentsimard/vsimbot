@@ -1,6 +1,9 @@
 var bot;
 
 var commands = {
+  join: function(args) {
+    console.log('join');
+  },
   say: function(args) {
     var matches = args.match(/^(#\w+)\s(.*)/); // #[channelname] [message]
     var channel, message;
@@ -30,12 +33,10 @@ var CLI = {
       command = matches[1];
       args = matches[2];
 
-      switch (command) {
-        case 'say':
-          commands.say(args);
-          break;
-        default:
-          console.log('Unrecognized command: %s', command);
+      if (command in commands) {
+        commands[command](args);
+      } else {
+        console.log('Unrecognized command: %s', command);
       }
     });
   }
