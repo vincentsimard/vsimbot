@@ -3,9 +3,10 @@
 var bot;
 
 var commands = {
-  join: function(args) {
-    console.log('join');
-  },
+  connect: function() { bot.connect(function() { console.log('connected.'); }); },
+  disconnect: function() { bot.disconnect(); },
+  join: function(channel) { bot.join(channel); },
+  part: function(channel) { bot.part(channel); },
   say: function(args) {
     var matches = args.match(/^(#\w+)\s(.*)/); // #[channelname] [message]
     var channel, message;

@@ -23,15 +23,7 @@ var patterns = {
         bot.say(to, text);
       }
     });
-  },
-
-  // is this x?
-  "^is this": function(from, to, message) {
-    if (to !== '#cooltrainermichael') { return; }
-    bot.say(to, 'No, this is Patrick! KevinTurtle');
-  },
-
-  "^!winner": function() {}
+  }
 };
 
 
@@ -45,18 +37,25 @@ var EventHandlers = {
     process.stdout.write('*** connecting... ');
   },
 
+  disconnect: function() {
+    console.log('*** disconnected');
+  },
+
   join: function (channel, nick, message, callback) {
     if (nick !== config.userName) { return; }
 
     console.log('*** joined %s', channel);
   },
 
-  message: function(from, to, message) {
+  part: function (channel, nick, message, callback) {
+    if (nick !== config.userName) { return; }
+
+    console.log('*** parted %s', channel);
+  },
+
+  "message#": function(from, to, message) {
     var match;
     var args = Array.prototype.slice.call(arguments, 0);
-
-    // Only handle channel messages (for now)
-    if (!to.match(/^[#&]/)) { return; }
 
     for (var pattern in patterns) {
       if (patterns.hasOwnProperty(pattern)) {
