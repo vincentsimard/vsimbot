@@ -5,8 +5,6 @@ var bot, config;
 var messageHandlers = {
   isThisPatrick: function(from, to, message) {
     var match = message.match(/^is this/i);
-    
-    if (!to.match(/^[#&]/)) { return; }
     if (!match) { return; }
     
     bot.say(to, 'No, this is Patrick! KevinTurtle');
@@ -14,12 +12,10 @@ var messageHandlers = {
 
   finger: function(from, to, message) {
     var match = message.match(/^(finger|fi|who\sis|who\'s)\s(.*)/i);
-    var handle;
-    
     if (!match) { return; }
 
-    // ICC handles are alphanumeric
-    handle = match[2].replace(/[^\w\s-]/gi, '');
+    // ICC handles must be alphanumeric
+    var handle = match[2].replace(/[^\w\s-]/gi, '');
 
     console.log('/finger %s', handle);
     
@@ -55,6 +51,9 @@ var EventHandlers = {
   },
 
   message: function(from, to, message) {
+    // Only handle channel messages (for now)
+    if (!to.match(/^[#&]/)) { return; }
+
     for (var key in messageHandlers) {
       if (messageHandlers.hasOwnProperty(key)) {
         messageHandlers[key].apply(this, arguments);
