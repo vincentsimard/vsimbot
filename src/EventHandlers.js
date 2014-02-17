@@ -19,7 +19,7 @@ var EventHandlers = {
   },
 
   join: function (channel, nick, message, callback) {
-    if (nick !== config.useName) { return; }
+    if (nick !== config.userName) { return; }
 
     console.log('*** joined %s', channel);
   },
