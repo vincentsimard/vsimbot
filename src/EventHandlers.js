@@ -1,21 +1,14 @@
+'use strict';
+
 var icc = require('./ICC.js');
 
 var bot, config;
 
-var messageHandlers = {
-  isThisPatrick: function(from, to, message) {
-    var match = message.match(/^is this/i);
-    if (!match) { return; }
-    
-    bot.say(to, 'No, this is Patrick! KevinTurtle');
-  },
-
-  finger: function(from, to, message) {
-    var match = message.match(/^(finger|fi|who\sis|who\'s)\s(.*)/i);
-    if (!match) { return; }
-
+var patterns = {
+  // finger
+  "^(finger|fi|who\\sis|who\\'s)\\s(.*)": function(from, to, message, handle) {
     // ICC handles must be alphanumeric
-    var handle = match[2].replace(/[^\w\s-]/gi, '');
+    handle = handle.replace(/[^\w\s-]/gi, '');
 
     console.log('/finger %s', handle);
     
@@ -30,7 +23,15 @@ var messageHandlers = {
         bot.say(to, text);
       }
     });
-  }
+  },
+
+  // is this x?
+  "^is this": function(from, to, message) {
+    if (to !== '#cooltrainermichael') { return; }
+    bot.say(to, 'No, this is Patrick! KevinTurtle');
+  },
+
+  "^!winner": function() {}
 };
 
 
@@ -51,12 +52,23 @@ var EventHandlers = {
   },
 
   message: function(from, to, message) {
+    var match;
+    var args = Array.prototype.slice.call(arguments, 0);
+
     // Only handle channel messages (for now)
     if (!to.match(/^[#&]/)) { return; }
 
-    for (var key in messageHandlers) {
-      if (messageHandlers.hasOwnProperty(key)) {
-        messageHandlers[key].apply(this, arguments);
+    for (var pattern in patterns) {
+      if (patterns.hasOwnProperty(pattern)) {
+        match = message.match(new RegExp(pattern, "i"));
+        
+        if (match) {
+          args.pop(); // Removes junk param sent by node-irc
+          args.push(match[2]); // Keeps the string after the pattern
+
+          patterns[pattern].apply(this, args);
+          return;
+        }
       }
     }
   },

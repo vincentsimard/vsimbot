@@ -1,7 +1,11 @@
+'use strict';
+
 var cheerio = require('cheerio');
 var request = require('request');
 
 
+
+// @TODO: This module is a mess
 
 var ICC = {
   // @TODO: Print fide/uscf rating? URL to fide profile?

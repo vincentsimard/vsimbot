@@ -1,3 +1,5 @@
+'use strict';
+
 var bot;
 
 var commands = {
