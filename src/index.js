@@ -12,7 +12,6 @@ var nconf = require('nconf');
 
 var cli = require('./CLI.js').CLI;
 var handlers = require('./EventHandlers.js').EventHandlers;
-var listeners = require('./Listeners.js').Listeners;
 
 var config = nconf
   .argv()
@@ -27,9 +26,9 @@ var bot = new irc.Client(config.server, config.userName, config);
 
 
 var init = function() {
+  // @TODO: Initialize modules in a cleaner way
   cli.init(bot);
   handlers.init(bot, config);
-  listeners.init(bot);
 
   bot.connect(function() { console.log('connected.'); });
 };

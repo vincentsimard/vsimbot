@@ -1,6 +1,13 @@
-// Standard events handling (join, part, connect, etc.)
-
 var bot, config;
+
+var isThisPatrick = function(from, to, message) {
+  var messageMatch = message.match(/^is this/i);
+  
+  if (!to.match(/^[#&]/)) { return; }
+  if (!messageMatch) { return; }
+  
+  bot.say(to, 'No, this is Patrick! KevinTurtle');
+};
 
 var EventHandlers = {
   error: function(message) {
@@ -12,9 +19,13 @@ var EventHandlers = {
   },
 
   join: function (channel, nick, message, callback) {
-    if (nick !== config.userName) { return; }
+    if (nick !== config.useName) { return; }
 
     console.log('*** joined %s', channel);
+  },
+
+  message: function(from, to, message) {
+    isThisPatrick(from, to, message);
   },
 
   init: function(ircClient, botConfig) {
