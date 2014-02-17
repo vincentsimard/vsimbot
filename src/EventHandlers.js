@@ -20,10 +20,18 @@ var messageHandlers = {
 
     // ICC handles are alphanumeric
     handle = match[2].replace(/[^\w\s-]/gi, '');
+
+    console.log('/finger %s', handle);
     
-    icc.finger(handle, function(name, groups) {
-      if (name && name.length > 0) {
-        bot.say(to, '"' + handle + '" is ' + name);
+    icc.finger(handle, function(name, title, rating, profileUrl) {
+      var text = '';
+
+      if (name && name.length) { text += '"' + handle + '" is ' + title + ' ' + name; }
+      if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
+      if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
+
+      if (text.length) {
+        bot.say(to, text);
       }
     });
   }

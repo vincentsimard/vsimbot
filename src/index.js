@@ -3,7 +3,6 @@
 'use strict';
 
 // @TODO: Handle all irc commands from stdin (join, part, etc.)
-// @TODO: Guess names from ICC handles
 // @TODO: Manage challenger queue
 
 var irc = require('irc');
