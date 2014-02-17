@@ -43,4 +43,4 @@ var CLI = {
 
 
 
-module.exports.CLI = CLI;
+module.exports = CLI;

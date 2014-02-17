@@ -10,8 +10,8 @@ var irc = require('irc');
 var fs = require('fs');
 var nconf = require('nconf');
 
-var cli = require('./CLI.js').CLI;
-var handlers = require('./EventHandlers.js').EventHandlers;
+var cli = require('./CLI.js');
+var handlers = require('./EventHandlers.js');
 
 var config = nconf
   .argv()
@@ -26,7 +26,7 @@ var bot = new irc.Client(config.server, config.userName, config);
 
 
 var init = function() {
-  // @TODO: Initialize modules in a cleaner way
+  // @TODO: Initialize modules in a cleaner way... maybe?
   cli.init(bot);
   handlers.init(bot, config);
 

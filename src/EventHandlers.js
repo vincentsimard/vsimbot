@@ -1,3 +1,5 @@
+var icc = require('./ICC.js');
+
 var bot, config;
 
 var messageHandlers = {
@@ -11,8 +13,17 @@ var messageHandlers = {
   },
 
   finger: function(from, to, message) {
-    if (message.match(/^finger/i)) {
-      console.log('finger');
+    var match = message.match(/^(finger|fi)\s(.*)/i);
+    var handle, name;
+    
+    if (!match) { return; }
+
+    // ICC handles are alphanumeric
+    handle = match[2].replace(/[^\w\s-]/gi, '');
+    name = icc.finger(handle).name;
+
+    if (name && name.length > 0) {
+      bot.say(to, '"' + handle + '" is ' + name);
     }
   }
 };
@@ -56,4 +67,4 @@ var EventHandlers = {
 
 
 
-module.exports.EventHandlers = EventHandlers;
+module.exports = EventHandlers;
