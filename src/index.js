@@ -10,7 +10,8 @@ var irc = require('irc');
 var fs = require('fs');
 var nconf = require('nconf');
 
-var handlers = require('./eventHandlers.js').handlers;
+var handlers = require('./EventHandlers.js').EventHandlers;
+var cli = require('./CLI.js').CLI;
 
 var config = nconf
   .argv()
@@ -32,56 +33,17 @@ var isThisPatrick = function(from, to, message) {
   
   bot.say(to, 'No, this is Patrick! KevinTurtle');
 };
+bot.addListener('message', isThisPatrick);
 
 
 
-// @TODO: Extract commands
-var cmdSay = function(args) {
-  var matches = args.match(/^(#\w+)\s(.*)/);
-  var channel, message;
+var init = function() {
+  handlers.init(bot);
+  cli.init(bot);
 
-  if (!matches) { return; }
-
-  channel = matches[1];
-  message = matches[2];
-
-  bot.say(channel, message);
+  bot.connect(function() { console.log('connected.'); });
 };
 
 
 
-// Handle stdin
-process.openStdin().on('data', function(chunk) {
-  var chunk = chunk + '';
-  var matches = chunk.match(/^\/(\w+)\s(.*)/);
-  var command, args;
-
-  if (!matches) { return; }
-
-  command = matches[1];
-  args = matches[2];
-
-  switch (command) {
-    case 'say':
-      cmdSay(args);
-      break;
-    default:
-      console.log('Unrecognized command: %s', command);
-  }
-});
-
-
-var initHandlers = function() {
-  var events = Object.keys(handlers);
-
-  for (var i=0; i<events.length; i++) {
-    bot.addListener(events[i], handlers[events[i]]);
-  }
-
-  bot.addListener('message', isThisPatrick);
-};
-
-
-
-initHandlers();
-bot.connect(function() { console.log('connected.'); });
+init();
