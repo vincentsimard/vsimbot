@@ -13,18 +13,19 @@ var messageHandlers = {
   },
 
   finger: function(from, to, message) {
-    var match = message.match(/^(finger|fi)\s(.*)/i);
-    var handle, name;
+    var match = message.match(/^(finger|fi|who\sis|who\'s)\s(.*)/i);
+    var handle;
     
     if (!match) { return; }
 
     // ICC handles are alphanumeric
     handle = match[2].replace(/[^\w\s-]/gi, '');
-    name = icc.finger(handle).name;
-
-    if (name && name.length > 0) {
-      bot.say(to, '"' + handle + '" is ' + name);
-    }
+    
+    icc.finger(handle, function(name, groups) {
+      if (name && name.length > 0) {
+        bot.say(to, '"' + handle + '" is ' + name);
+      }
+    });
   }
 };
 
