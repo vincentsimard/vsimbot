@@ -1,13 +1,23 @@
 var bot, config;
 
-var isThisPatrick = function(from, to, message) {
-  var messageMatch = message.match(/^is this/i);
-  
-  if (!to.match(/^[#&]/)) { return; }
-  if (!messageMatch) { return; }
-  
-  bot.say(to, 'No, this is Patrick! KevinTurtle');
+var messageHandlers = {
+  isThisPatrick: function(from, to, message) {
+    var match = message.match(/^is this/i);
+    
+    if (!to.match(/^[#&]/)) { return; }
+    if (!match) { return; }
+    
+    bot.say(to, 'No, this is Patrick! KevinTurtle');
+  },
+
+  finger: function(from, to, message) {
+    if (message.match(/^finger/i)) {
+      console.log('finger');
+    }
+  }
 };
+
+
 
 var EventHandlers = {
   error: function(message) {
@@ -25,7 +35,11 @@ var EventHandlers = {
   },
 
   message: function(from, to, message) {
-    isThisPatrick(from, to, message);
+    for (var key in messageHandlers) {
+      if (messageHandlers.hasOwnProperty(key)) {
+        messageHandlers[key].apply(this, arguments);
+      }
+    }
   },
 
   init: function(ircClient, botConfig) {
