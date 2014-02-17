@@ -10,6 +10,8 @@ var irc = require('irc');
 var fs = require('fs');
 var nconf = require('nconf');
 
+var handlers = require('./eventHandlers.js').handlers;
+
 var config = nconf
   .argv()
   .env()
@@ -33,22 +35,6 @@ var isThisPatrick = function(from, to, message) {
 
 
 
-var printError = function(message) {
-  console.error('ERROR: %s: %s', message.command, message.args.join(' '));
-};
-
-var printConnect = function() {
-  process.stdout.write('*** connecting to ' + config.server + '... ');
-};
-
-var printJoin = function (channel, nick, message) {
-  if (nick !== config.userName) { return; }
-
-  console.log('*** joined %s', channel);
-};
-
-
-
 // @TODO: Extract commands
 var cmdSay = function(args) {
   var matches = args.match(/^(#\w+)\s(.*)/);
@@ -60,7 +46,7 @@ var cmdSay = function(args) {
   message = matches[2];
 
   bot.say(channel, message);
-}
+};
 
 
 
@@ -85,11 +71,17 @@ process.openStdin().on('data', function(chunk) {
 });
 
 
+var initHandlers = function() {
+  var events = Object.keys(handlers);
 
+  for (var i=0; i<events.length; i++) {
+    bot.addListener(events[i], handlers[events[i]]);
+  }
+
+  bot.addListener('message', isThisPatrick);
+};
+
+
+
+initHandlers();
 bot.connect(function() { console.log('connected.'); });
-
-bot.addListener('connect', printConnect);
-bot.addListener('join', printJoin);
-bot.addListener('error', printError);
-
-bot.addListener('message', isThisPatrick);
