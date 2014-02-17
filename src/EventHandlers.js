@@ -1,3 +1,5 @@
+// Standard events handling (join, part, connect, etc.)
+
 var bot, config;
 
 var EventHandlers = {
