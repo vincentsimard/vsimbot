@@ -2,7 +2,7 @@ var bot;
 
 var commands = {
   say: function(args) {
-    var matches = args.match(/^(#\w+)\s(.*)/);
+    var matches = args.match(/^(#\w+)\s(.*)/); // #[channelname] [message]
     var channel, message;
 
     if (!matches) { return; }
