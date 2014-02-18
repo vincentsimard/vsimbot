@@ -45,8 +45,23 @@ var CLI = {
   }
 };
 
+/*
+  console.log() for irc messages
+
+  arguments:
+   - text
+   - to
+   - from
+   - *format specifiers
+*/
 console.message = function() {
-  console.log.call(this, arguments);
+  var args = Array.prototype.slice.call(arguments, 0);
+
+  args[0] = '%s <%s> ' + args[0];
+  args[1] = args[1].channel;
+  args[2] = args[2].user;
+  
+  console.log.apply(this, args);
 };
 
 

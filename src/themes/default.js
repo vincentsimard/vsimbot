@@ -28,8 +28,7 @@ defaultTheme = {
   timestamp: 'yellow',
   irc: 'grey',
   channel: 'cyan',
-  user: 'blue',
-  message: 'white'
+  user: 'blue'
 };
 
 var addTimestamp = function() {

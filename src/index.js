@@ -31,7 +31,7 @@ var loadTheme = function(name) {
 
 var init = function() {
   loadTheme(config.theme);
-console.message('%s fdsafdas', 'waaaa');
+
   // @TODO: Initialize modules in a cleaner way... maybe?
   cli.init(bot);
   handlers.init(bot, config);
