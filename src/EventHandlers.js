@@ -12,15 +12,17 @@ var patterns = {
 
     console.message('/finger %s'.input, to, from, handle.bold);
     
-    icc.finger(handle, function(name, title, rating, profileUrl) {
+    icc.finger(handle, function(exists, name, title, rating, profileUrl) {
       var text = '';
+
+      console.log('finger');
 
       if (name && name.length) { text += '"' + handle + '" is ' + title + ' ' + name; }
       if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
       if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
 
       // @TODO: Distinguish if account doesn't exist or if publicinfo is disabled?
-      if (!text.length) { text = 'No public info for "' + handle + '"'; }
+      if (!text.length && exists) { text = 'No public info for "' + handle + '"'; }
 
       bot.say(to, text);
       console.message('%s', to, config.userName, text);

@@ -3,8 +3,6 @@
 var cheerio = require('cheerio');
 var request = require('request');
 
-
-
 // @TODO: This module is a mess
 
 var ICC = {
@@ -14,7 +12,7 @@ var ICC = {
     var url = 'http://www6.chessclub.com/finger/' + handle;
 
     var parseFingerPage = function(err, response, html) {
-      var name, groups, title;
+      var name, groups, title, exists;
 
       if (err) { return console.error(err.error); }
 
@@ -26,6 +24,8 @@ var ICC = {
         var groupsRE = /(Groups\s:)\s(.*)/;
         var nameMatches, groupsMatches;
 
+        exists = !text.match(/does\snot\smatch\sany\splayer/i);
+
         nameMatches   = text.match(nameRE);
         groupsMatches = text.match(groupsRE);
 
@@ -34,16 +34,12 @@ var ICC = {
         title = self.getTitle(groups);
       });
 
-      if (name) {
-        self.getFideUrl(name, function(rating, profileUrl) {
-          if (callback) { callback(name, title, rating, profileUrl); }
-        });
-      } else {
-        callback();
-      }
+      self.getFideUrl(name, function(rating, profileUrl) {
+        if (callback) { callback(exists, name, title, rating, profileUrl); }
+      });
     };
 
-    request(url, parseFingerPage);
+    request.get(url, parseFingerPage);
   },
 
   getTitle: function(groups) {
@@ -59,6 +55,8 @@ var ICC = {
   },
 
   getFideUrl: function(name, callback) {
+    if (!name) { callback(); return; }
+
     var self = this;
     var site = '+site%3Aratings.fide.com%2Fcard.phtml';
     var googleUrl = 'http://google.com/search?q=';
@@ -83,7 +81,7 @@ var ICC = {
       }
     };
 
-    request(url, parseGooglePage);
+    request.get(url, parseGooglePage);
   },
 
   fingerFide: function(url, callback) {
@@ -108,7 +106,7 @@ var ICC = {
       if (callback) { callback(rating); }
     };
 
-    request(url, parseFideProfilePage);
+    request.get(url, parseFideProfilePage);
   }
 };
 
