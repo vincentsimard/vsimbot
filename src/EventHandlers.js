@@ -19,6 +19,7 @@ var patterns = {
       if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
       if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
 
+      // @TODO: Distinguish if account doesn't exist or if publicinfo is disabled?
       if (!text.length) { text = 'No public info for "' + handle + '"'; }
 
       bot.say(to, text);
