@@ -34,9 +34,7 @@ var EventHandlers = {
   },
 
   connect: function() {
-    var connectMessage = '*** connecting to '+config.server.bold+'... ';
-    
-    process.stdout.write(connectMessage.irc);
+    console.log('*** connecting to %s... '.irc, config.server.bold);
   },
 
   disconnect: function() {

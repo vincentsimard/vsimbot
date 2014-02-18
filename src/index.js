@@ -30,13 +30,14 @@ var loadTheme = function(name) {
 };
 
 var init = function() {
+  console.log();
   loadTheme(config.theme);
 
   // @TODO: Initialize modules in a cleaner way... maybe?
   cli.init(bot);
   handlers.init(bot, config);
 
-  bot.connect(function() { console.log('connected.'.info); });
+  bot.connect(function() { console.log('*** connected.'.info); });
 };
 
 
