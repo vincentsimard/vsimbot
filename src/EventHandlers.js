@@ -10,7 +10,7 @@ var patterns = {
     // ICC handles must be alphanumeric
     handle = handle.replace(/[^\w\s-]/gi, '');
 
-    console.log('/finger %s', handle);
+    console.log('/finger %s'.input, handle.bold);
     
     icc.finger(handle, function(name, title, rating, profileUrl) {
       var text = '';
@@ -30,27 +30,29 @@ var patterns = {
 
 var EventHandlers = {
   error: function(message) {
-    console.error('ERROR: %s: %s', message.command, message.args.join(' '));
+    console.error('ERROR: %s: %s'.error, message.command, message.args.join(' '));
   },
 
   connect: function() {
-    process.stdout.write('*** connecting... ');
+    var connectMessage = '*** connecting to '+config.server.bold+'... ';
+    
+    process.stdout.write(connectMessage.irc);
   },
 
   disconnect: function() {
-    console.log('*** disconnected');
+    console.log('*** disconnected'.irc);
   },
 
   join: function (channel, nick, message, callback) {
     if (nick !== config.userName) { return; }
 
-    console.log('*** joined %s', channel);
+    console.log('*** joined %s'.irc, channel.bold);
   },
 
   part: function (channel, nick, message, callback) {
     if (nick !== config.userName) { return; }
 
-    console.log('*** parted %s', channel);
+    console.log('*** parted %s'.irc, channel.bold);
   },
 
   "message#": function(from, to, message) {

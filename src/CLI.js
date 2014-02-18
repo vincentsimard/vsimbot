@@ -3,7 +3,7 @@
 var bot;
 
 var commands = {
-  connect: function() { bot.connect(function() { console.log('connected.'); }); },
+  connect: function() { bot.connect(function() { console.log('connected.'.info); }); },
   disconnect: function() { bot.disconnect(); },
   join: function(channel) { bot.join(channel); },
   part: function(channel) { bot.part(channel); },
@@ -39,7 +39,7 @@ var CLI = {
       if (command in commands) {
         commands[command](args);
       } else {
-        console.log('Unrecognized command: %s', command);
+        console.log('Unrecognized command: %s'.error, command);
       }
     });
   }
