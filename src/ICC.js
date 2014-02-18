@@ -38,6 +38,8 @@ var ICC = {
         self.getFideUrl(name, function(rating, profileUrl) {
           if (callback) { callback(name, title, rating, profileUrl); }
         });
+      } else {
+        callback();
       }
     };
 

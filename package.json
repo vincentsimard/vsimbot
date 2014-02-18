@@ -2,7 +2,7 @@
   "name": "vsimbot",
   "version": "0.1.0",
   "description": "IRC bot",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha"
   },

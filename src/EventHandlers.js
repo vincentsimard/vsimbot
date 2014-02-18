@@ -19,10 +19,10 @@ var patterns = {
       if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
       if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
 
-      if (text.length) {
-        bot.say(to, text);
-        console.message('%s', to, config.userName, text);
-      }
+      if (!text.length) { text = 'No public info for "' + handle + '"'; }
+
+      bot.say(to, text);
+      console.message('%s', to, config.userName, text);
     });
   }
 };
