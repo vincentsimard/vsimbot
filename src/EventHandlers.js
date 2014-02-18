@@ -10,7 +10,7 @@ var patterns = {
     // ICC handles must be alphanumeric
     handle = handle.replace(/[^\w\s-]/gi, '');
 
-    console.log('/finger %s'.input, handle.bold);
+    console.log('%s <%s> /finger %s'.input, to.channel, from.user, handle.bold);
     
     icc.finger(handle, function(name, title, rating, profileUrl) {
       var text = '';
@@ -21,6 +21,7 @@ var patterns = {
 
       if (text.length) {
         bot.say(to, text);
+        console.log('%s <%s> %s', to.channel, config.userName.user, text.message);
       }
     });
   }

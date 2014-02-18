@@ -30,7 +30,6 @@ var loadTheme = function(name) {
 };
 
 var init = function() {
-  console.log();
   loadTheme(config.theme);
 
   // @TODO: Initialize modules in a cleaner way... maybe?

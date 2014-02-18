@@ -23,9 +23,13 @@ defaultTheme = {
   error: 'red',
   info: 'green',
   input: 'white',
-  irc: 'grey',
   help: 'cyan',
-  timestamp: 'yellow'
+
+  timestamp: 'yellow',
+  irc: 'grey',
+  channel: 'cyan',
+  user: 'blue',
+  message: 'white'
 };
 
 var addTimestamp = function() {
