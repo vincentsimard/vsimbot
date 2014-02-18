@@ -45,6 +45,8 @@ var ICC = {
   },
 
   getTitle: function(groups) {
+    if (typeof groups === 'undefined') { return ''; }
+
     var title;
     var titleRE = /(GM|IM|FM|WGM|WIM|WFM)s/;
     var matches = groups.match(titleRE);
