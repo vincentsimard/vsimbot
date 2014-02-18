@@ -4,30 +4,52 @@ var icc = require('./ICC.js');
 
 var bot, config;
 
-var patterns = {
-  // finger
-  "^(finger|fi|who\\sis|who\\'s)\\s(.*)": function(from, to, message, handle) {
-    // ICC handles must be alphanumeric
-    handle = handle.replace(/[^\w\s-]/gi, '');
+// Thanks to Siderite @ http://siderite.blogspot.com/2011/09/portable-game-notation-and-parsing-it.html
+//var pgnRE = '(?<pgnGame>\s*(?:\[\s*(?<tagName>\w+)\s*"(?<tagValue>[^"]*)"\s*\]\\\s*s*)*(?:(?<moveNumber>\d+)(?<moveMarker>\.|\.{3})\s*(?<moveValue>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?)(?:\s*(?<moveValue2>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?))?\s*(?:\(\s*(?<variation>(?:(?<varMoveNumber>\d+)(?<varMoveMarker>\.|\.{3})\s*(?<varMoveValue>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?)(?:\s*(?<varMoveValue2>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?))?\s*(?:\((?<varVariation>.*)\)\s*)?(?:\{(?<varComment>[^\}]*?)\}\s*)?)*)\s*\)\s*)*(?:\{(?<comment>[^\}]*?)\}\s*)?)*(?<endMarker>1\-?0|0\-?1|1/2\-?1/2|\*)?\s*)';
+// pgnRE = '(\d+)\.
+// ([KQNBR])?
+// (([a-h][1-8])|((1-0)|(0-1)|(1/2-1/2)|(\*)))([!?+]|ep)
+// (([KQNBR])?
+// (([a-h][1-8])|((1-0)|(0-1)|(1/2-1/2)|(\*)))([!?+]|ep))?'
 
-    console.message('/finger %s'.input, to, from, handle.bold);
-    
-    icc.finger(handle, function(exists, name, title, rating, profileUrl) {
-      var text = '';
+// @TODO: This is a very simplistic pgn regexp.
+//        It's missing game result, header, comments, etc.
+var pgnRENumber = "\\d+\\.\\s*";
+var pgnREPly = "\\w{2,8}\\s*";
+var pgnRETwoPlys = "(" + pgnRENumber + pgnREPly + pgnREPly + "\\s*)";
+var pgnRE = "(" + pgnRETwoPlys + "{2,}\\s*(" + pgnRENumber + pgnREPly + ")?)";
 
-      console.log('finger');
+var patterns = {};
 
-      if (name && name.length) { text += '"' + handle + '" is ' + title + ' ' + name; }
-      if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
-      if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
+// finger icc
+patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, junk, match) {
+  var handle;
 
-      // @TODO: Distinguish if account doesn't exist or if publicinfo is disabled?
-      if (!text.length && exists) { text = 'No public info for "' + handle + '"'; }
+  handle = match[2];
+  handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
-      bot.say(to, text);
-      console.message('%s', to, config.userName, text);
-    });
-  }
+  console.message('/finger %s'.input, to, from, handle.bold);
+  
+  icc.finger(handle, function(exists, name, title, rating, profileUrl) {
+    var text = '';
+
+    if (name && name.length) { text += '"' + handle + '" is ' + title + ' ' + name; }
+    if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
+    if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
+
+    // @TODO: Distinguish if account doesn't exist or if publicinfo is disabled?
+    if (!text.length && exists) { text = 'No public info for "' + handle + '"'; }
+
+    bot.say(to, text);
+    console.message('%s', to, config.userName, text);
+  });
+};
+
+// post pgn to chesspastebin
+patterns[pgnRE] = function(from, to, message, junk, match) {
+  var pgn = match[0];
+
+  console.message('/chesspastebin %s'.input, to, from, pgn.bold);
 };
 
 
@@ -64,11 +86,9 @@ var EventHandlers = {
     for (var pattern in patterns) {
       if (patterns.hasOwnProperty(pattern)) {
         match = message.match(new RegExp(pattern, "i"));
-        
-        if (match) {
-          args.pop(); // Removes junk param sent by node-irc
-          args.push(match[2]); // Keeps the string after the pattern
 
+        if (match) {
+          args.push(match);
           patterns[pattern].apply(this, args);
           return;
         }

@@ -14,7 +14,7 @@ var ICC = {
     var parseFingerPage = function(err, response, html) {
       var name, groups, title, exists;
 
-      if (err) { return console.error(err.error); }
+      if (err) { return console.error(err); }
 
       var $ = cheerio.load(html);
 
@@ -66,7 +66,7 @@ var ICC = {
       var profileUrl;
       var urlPrefix = 'http://';
 
-      if (err) { return console.error(err.error); }
+      if (err) { return console.error(err); }
 
       var $ = cheerio.load(html);
 
@@ -88,7 +88,7 @@ var ICC = {
     var parseFideProfilePage = function(err, response, html) {
       var federation, title, rating;
 
-      if (err) { return console.error(err.error); }
+      if (err) { return console.error(err); }
 
       var $ = cheerio.load(html);
 
