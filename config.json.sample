@@ -18,5 +18,6 @@
   "stripColors": false,
   "channelPrefixes": "&#",
   "messageSplit": 512,
-  "theme": "default"
+  "theme": "default",
+  "chesspastebinapikey": ""
 }

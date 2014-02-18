@@ -1,16 +1,9 @@
 'use strict';
 
 var icc = require('./ICC.js');
+var cpb = require('./ChessPasteBin.js');
 
 var bot, config;
-
-// Thanks to Siderite @ http://siderite.blogspot.com/2011/09/portable-game-notation-and-parsing-it.html
-//var pgnRE = '(?<pgnGame>\s*(?:\[\s*(?<tagName>\w+)\s*"(?<tagValue>[^"]*)"\s*\]\\\s*s*)*(?:(?<moveNumber>\d+)(?<moveMarker>\.|\.{3})\s*(?<moveValue>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?)(?:\s*(?<moveValue2>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?))?\s*(?:\(\s*(?<variation>(?:(?<varMoveNumber>\d+)(?<varMoveMarker>\.|\.{3})\s*(?<varMoveValue>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?)(?:\s*(?<varMoveValue2>(?:[PNBRQK]?[a-h]?[1-8]?x?(?:[a-h][1-8]|[NBRQK])(?:\=[PNBRQK])?|O(-?O){1,2})[\+#]?(\s*[\!\?]+)?))?\s*(?:\((?<varVariation>.*)\)\s*)?(?:\{(?<varComment>[^\}]*?)\}\s*)?)*)\s*\)\s*)*(?:\{(?<comment>[^\}]*?)\}\s*)?)*(?<endMarker>1\-?0|0\-?1|1/2\-?1/2|\*)?\s*)';
-// pgnRE = '(\d+)\.
-// ([KQNBR])?
-// (([a-h][1-8])|((1-0)|(0-1)|(1/2-1/2)|(\*)))([!?+]|ep)
-// (([KQNBR])?
-// (([a-h][1-8])|((1-0)|(0-1)|(1/2-1/2)|(\*)))([!?+]|ep))?'
 
 // @TODO: This is a very simplistic pgn regexp.
 //        It's missing game result, header, comments, etc.
@@ -48,6 +41,14 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
 // post pgn to chesspastebin
 patterns[pgnRE] = function(from, to, message, junk, match) {
   var pgn = match[0];
+
+  cpb.add(config.chesspastebinapikey, pgn, 'vsimbot', 'vsimbot@vsimbot.com', true, function(err, response, body) {
+    if (err) { return console.error(err); }
+
+    // @TODO: Getting invalid request
+    console.log(JSON.stringify(response), 'RESPONSE'.bold.cyan);
+    console.log(body, 'BODY'.bold.cyan);
+  });
 
   console.message('/chesspastebin %s'.input, to, from, pgn.bold);
 };
