@@ -45,6 +45,10 @@ var CLI = {
   }
 };
 
+console.message = function() {
+  console.log.call(this, arguments);
+};
+
 
 
 module.exports = CLI;
