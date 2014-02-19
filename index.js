@@ -3,8 +3,6 @@
 'use strict';
 
 // @TODO: Manage challenger queue
-// @TODO: Invert weight of commands console log
-//        (make command names bold and arguments normal weight)
 
 var irc = require('irc');
 var fs = require('fs');
