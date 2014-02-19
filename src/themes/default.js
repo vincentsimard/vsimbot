@@ -17,6 +17,8 @@ Available colors/styles:
   random
 */
 
+var moment = require('moment');
+
 defaultTheme = {
   warn: 'yellow',
   debug: 'blue',
@@ -36,7 +38,7 @@ var addTimestamp = function() {
   console.log = function() {
     if (!arguments.length) { return; }
 
-    var ts = '['+new Date().toISOString().slice(11,-5)+']';
+    var ts = '[' + moment().format('HH:mm:ss') + ']';
 
     arguments[0] = ts.timestamp + ' ' + arguments[0];
 

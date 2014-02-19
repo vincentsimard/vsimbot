@@ -42,6 +42,10 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
 patterns[pgnRE] = function(from, to, message, junk, match) {
   var pgn = match[0];
 
+  console.message('/chesspastebin %s'.input, to, from, pgn.bold);
+
+  // @TODO: Getting INVALID REQUEST with both add methods
+  /*
   cpb.add(config.chesspastebinapikey, pgn, 'vsimbot', 'vsimbot@vsimbot.com', true, function(err, response, body) {
     if (err) { return console.error(err); }
 
@@ -49,8 +53,12 @@ patterns[pgnRE] = function(from, to, message, junk, match) {
     console.log(JSON.stringify(response), 'RESPONSE'.bold.cyan);
     console.log(body, 'BODY'.bold.cyan);
   });
+  */
 
-  console.message('/chesspastebin %s'.input, to, from, pgn.bold);
+  /*
+  pgn = '1.+e4+e5+2.+Nf4+Nc6';
+  cpb.add2(pgn, config.chesspastebinapikey);
+  */
 };
 
 
