@@ -24,7 +24,10 @@ var ICC = {
         var groupsRE = /(Groups\s:)\s(.*)/;
         var nameMatches, groupsMatches;
 
-        exists = !text.match(/does\snot\smatch\sany\splayer/i);
+        // We consider that the accound doesn't exist if:
+        //   - The handle doesn't match any player
+        //   - The handle matches more than one player
+        exists = !text.match(/(does\snot\smatch\sany\splayer)|(matches\sat\sleast)/i);
 
         nameMatches   = text.match(nameRE);
         groupsMatches = text.match(groupsRE);

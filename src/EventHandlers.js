@@ -7,6 +7,7 @@ var bot, config;
 
 // @TODO: This is a very simplistic pgn regexp.
 //        It's missing game result, header, comments, etc.
+// @TODO: At least parse the player names
 var pgnRENumber = "\\d+\\.\\s*";
 var pgnREPly = "[\\w\\+\\-#=]{2,8}\\s*";
 var pgnRETwoPlys = "(" + pgnRENumber + pgnREPly + pgnREPly + "\\s*)";
@@ -25,6 +26,8 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
   console.message('/finger %s'.input, to, from, handle.bold);
   
   icc.finger(handle, function(exists, name, title, rating, profileUrl) {
+    if (!exists) { return; }
+
     var text = '';
 
     if (name && name.length) { text += '"' + handle + '" is ' + title + ' ' + name; }
@@ -32,6 +35,7 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
     if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
 
     // @TODO: Distinguish if account doesn't exist or if publicinfo is disabled?
+    //        Currently not displaying anything if the account doesn't exist
     if (!text.length && exists) { text = 'No public info for "' + handle + '"'; }
 
     bot.say(to, text);
