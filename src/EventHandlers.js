@@ -8,9 +8,10 @@ var bot, config;
 // @TODO: This is a very simplistic pgn regexp.
 //        It's missing game result, header, comments, etc.
 var pgnRENumber = "\\d+\\.\\s*";
-var pgnREPly = "\\w{2,8}\\s*";
+var pgnREPly = "[\\w\\+\\-#=]{2,8}\\s*";
 var pgnRETwoPlys = "(" + pgnRENumber + pgnREPly + pgnREPly + "\\s*)";
-var pgnRE = "(" + pgnRETwoPlys + "{2,}\\s*(" + pgnRENumber + pgnREPly + ")?)";
+var pgnREResult = "(\\*|1\\-0|0\\-1|0\\.5\\-0\\.5|\\.5\\-\\.5|1\\/2\\-1\\/2)?";
+var pgnRE = "(" + pgnRETwoPlys + "{2,}\\s*(" + pgnRENumber + pgnREPly + ")?" + pgnREResult + ")";
 
 var patterns = {};
 
