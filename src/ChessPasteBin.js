@@ -51,6 +51,19 @@ var CPB = {
 
     req.end(content, 'utf8');
   },
+
+  addPGN: function(apikey, pgn, name, email, sandbox, callback) {
+    this.add(apikey, pgn, name, email, sandbox, callback);
+  },
+
+  addFEN: function(apikey, fen, name, email, sandbox, callback) {
+    // Need to wrap FEN/EPD in PGN header to be able to post on chesspastebin
+    if (typeof fen !== 'undefined') {
+      fen = "[FEN " + fen + "]";
+    }
+
+    this.add(apikey, fen, name, email, sandbox, callback);
+  }
 };
 
 module.exports = CPB;

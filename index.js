@@ -5,7 +5,6 @@
 // @TODO: Manage challenger queue
 // @TODO: Invert weight of commands console log
 //        (make command names bold and arguments normal weight)
-// @TODO: Post FEN/EDP to cpb
 
 var irc = require('irc');
 var fs = require('fs');

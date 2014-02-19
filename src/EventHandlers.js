@@ -14,6 +14,9 @@ var pgnRETwoPlys = "(" + pgnRENumber + pgnREPly + pgnREPly + "\\s*)";
 var pgnREResult = "(\\*|1\\-0|0\\-1|0\\.5\\-0\\.5|\\.5\\-\\.5|1\\/2\\-1\\/2)?";
 var pgnRE = "(" + pgnRETwoPlys + "{2,}\\s*(" + pgnRENumber + pgnREPly + ")?" + pgnREResult + ")";
 
+// Thanks to http://chess.stackexchange.com/questions/1482/how-to-know-when-a-fen-position-is-legal
+var fenRE = "([rnbqkpRNBQKP1-8]+\\/){7}([rnbqkpRNBQKP1-8]+)\\s[bw-]\\s(([a-hkqA-HKQ]{1,4})|(-))\\s(([a-h][36])|(-))\\s\\d+\\s\\d+";
+
 var patterns = {};
 
 // finger icc
@@ -23,7 +26,7 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
   handle = match[2];
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
-  console.message('/finger %s'.input, to, from, handle.bold);
+  console.message('/icc.finger %s'.input, to, from, handle.bold);
   
   icc.finger(handle, function(exists, name, title, rating, profileUrl) {
     if (!exists) { return; }
@@ -38,30 +41,46 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
     //        Currently not displaying anything if the account doesn't exist
     if (!text.length && exists) { text = 'No public info for "' + handle + '"'; }
 
-    bot.say(to, text);
-    console.message('%s', to, config.userName, text);
+    notifyChannelAndLogMessage(to, text);
   });
 };
 
 // post pgn to chesspastebin
 patterns[pgnRE] = function(from, to, message, junk, match) {
+  addToChessPasteBin(from, to, message, junk, match);
+};
+
+// post fen to chesspastebin
+patterns[fenRE] = function(from, to, message, junk, match) {
+  addToChessPasteBin(from, to, message, junk, match, true);
+};
+
+
+
+var addToChessPasteBin = function(from, to, message, junk, match, isFEN) {
   var pgn = match[0];
+  var format = isFEN ? 'FEN' : 'PGN';
+  var fnName = 'add' + format;
 
-  console.message('/chesspastebin %s'.input, to, from, pgn.bold);
+  console.message('/chesspastebin.%s %s'.input, to, from, fnName, pgn.bold);
 
-  cpb.add(config.chesspastebinAPIKey, pgn, from, undefined, config.chesspastebinSandbox, function(data) {
+  cpb[fnName](config.chesspastebinAPIKey, pgn, from, undefined, config.chesspastebinSandbox, function(data) {
     var cpbUrl = 'http://www.chesspastebin.com/?p=';
     var cpbId = data;
     var text = '';
 
-    // @TODO: Log error? No id returned by chesspastebin
+    // @TODO: Log error if no id is returned by chesspastebin?
     if (!isNaN(cpb)) { return; }
 
-    text = 'The pgn posted by ' + from + ' is now viewable at: ' + cpbUrl + cpbId;
+    text = 'The ' + format + ' posted by ' + from + ' is now available at: ' + cpbUrl + cpbId;
 
-    bot.say(to, text);
-    console.message('%s', to, config.userName, text);
+    notifyChannelAndLogMessage(to, text);
   });
+};
+
+var notifyChannelAndLogMessage = function(to, text) {
+  bot.say(to, text);
+  console.message('%s', to, config.userName, text);
 };
 
 
