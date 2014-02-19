@@ -57,6 +57,9 @@ var CLI = {
 console.message = function() {
   var args = Array.prototype.slice.call(arguments, 0);
 
+  // Bold style for commands
+  args[0] = args[0].replace(/(\/[^\s]+)/, '$1'.bold);
+
   args[0] = '%s <%s> ' + args[0];
   args[1] = args[1].channel;
   args[2] = args[2].user;

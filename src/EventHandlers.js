@@ -26,7 +26,7 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
   handle = match[2];
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
-  console.message('%s %s'.input, to, from, '/icc.finger'.bold, handle);
+  console.message('/icc.finger %s'.input, to, from, handle);
   
   icc.finger(handle, function(exists, name, title, rating, profileUrl) {
     if (!exists) { return; }
@@ -62,7 +62,7 @@ var addToChessPasteBin = function(from, to, message, junk, match, isFEN) {
   var format = isFEN ? 'FEN' : 'PGN';
   var fnName = 'add' + format;
 
-  console.message('%s %s'.input, to, from, ('/chesspastebin.' + fnName).bold, pgn);
+  console.message('/chesspastebin.%s %s'.input, to, from, fnName, pgn);
 
   cpb[fnName](config.chesspastebinAPIKey, pgn, from, undefined, config.chesspastebinSandbox, function(data) {
     var cpbUrl = 'http://www.chesspastebin.com/?p=';
