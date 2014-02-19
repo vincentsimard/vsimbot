@@ -5,9 +5,7 @@ var cpb = require('./ChessPasteBin.js');
 
 var bot, config;
 
-// @TODO: This is a very simplistic pgn regexp.
-//        It's missing game result, header, comments, etc.
-// @TODO: At least parse the player names
+// @TODO: This is a very simplistic pgn regexp. No support for variations or comments
 var pgnRENumber = "\\d+\\.\\s*";
 var pgnREPly = "[\\w\\+\\-#=]{2,8}\\s*";
 var pgnRETwoPlys = "(" + pgnRENumber + pgnREPly + pgnREPly + "\\s*)";
