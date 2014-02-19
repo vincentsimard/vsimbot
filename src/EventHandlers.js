@@ -44,21 +44,19 @@ patterns[pgnRE] = function(from, to, message, junk, match) {
 
   console.message('/chesspastebin %s'.input, to, from, pgn.bold);
 
-  // @TODO: Getting INVALID REQUEST with both add methods
-  /*
-  cpb.add(config.chesspastebinapikey, pgn, 'vsimbot', 'vsimbot@vsimbot.com', true, function(err, response, body) {
-    if (err) { return console.error(err); }
+  cpb.add(config.chesspastebinAPIKey, pgn, from, undefined, config.chesspastebinSandbox, function(data) {
+    var cpbUrl = 'http://www.chesspastebin.com/?p=';
+    var cpbId = data;
+    var text = '';
 
-    // @TODO: Getting invalid request
-    console.log(JSON.stringify(response), 'RESPONSE'.bold.cyan);
-    console.log(body, 'BODY'.bold.cyan);
+    // @TODO: Log error? No id returned by chesspastebin
+    if (!isNaN(cpb)) { return; }
+
+    text = 'The pgn posted by ' + from + ' is now viewable at: ' + cpbUrl + cpbId;
+
+    bot.say(to, text);
+    console.message('%s', to, config.userName, text);
   });
-  */
-
-  /*
-  pgn = '1.+e4+e5+2.+Nf4+Nc6';
-  cpb.add2(pgn, config.chesspastebinapikey);
-  */
 };
 
 

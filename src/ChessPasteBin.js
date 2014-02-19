@@ -1,26 +1,30 @@
 'use strict';
 
-var request = require('request');
+// var request = require('request');
 var http = require('http');
 
 var CPB = {
+  /*
+  // @TODO: I'd much rather use 'request' but I'm getting 'INVALID REQUEST' from cpb. bah!
   add: function(apikey, pgn, name, email, sandbox, callback) {
     var url = 'http://www.chesspastebin.com/api/add/';
-
-    // pgn = '1. e4 e5 2. Nf3 Nc6';
 
     request.post(url, {
       apikey: apikey,
       pgn: pgn,
-      name: 'vsimbot',
-      email: 'vsimbot@vsimbot.com',
       sandbox: true
     }, callback);
   },
+  */
 
-  add2: function(pgn, apikey) {
-    var self = this;
-    var content = 'apikey=' + apikey + '&pgn=' + pgn + '&sandbox=true';
+  add: function(apikey, pgn, name, email, sandbox, callback) {
+    if (typeof apikey === 'undefined') { return; }
+    if (typeof pgn === 'undefined') { return; }
+
+    var content = 'apikey=' + apikey + '&pgn=' + pgn + '&sandbox=' + !!sandbox;
+
+    if (typeof name !== 'undefined') { content += '&name=' + name; }
+    if (typeof email !== 'undefined') { content += '&email=' + email; }
 
     var options = {
       hostname: 'www.chesspastebin.com',
@@ -40,13 +44,10 @@ var CPB = {
 
     var req = http.request(options, function(res) {
       res.setEncoding('utf8');
-      res.on('data', function (chunk) { 
-       console.log(chunk);
-      });
+      res.on('data', callback);
     });
-    req.on('error', function(e) {
-      console.log(e);
-    });
+
+    req.on('error', function(err) { console.error(err); });
 
     req.end(content, 'utf8');
   },

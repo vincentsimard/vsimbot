@@ -19,5 +19,6 @@
   "channelPrefixes": "&#",
   "messageSplit": 512,
   "theme": "default",
-  "chesspastebinapikey": ""
+  "chesspastebinAPIKey": "",
+  "chesspastebinSandbox": true
 }
