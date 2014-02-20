@@ -52,6 +52,8 @@ var FIDE = {
   },
 
   getPlayerInfo: function(url, callback) {
+    var self = this;
+
     if (typeof url === 'undefined') {
       callback && callback();
       return;
@@ -68,17 +70,11 @@ var FIDE = {
       };
 
       var translateRatings = function(ratings) {
-        var std = ratings.match(/(std\.)(\d*)/);
-        var rapid = ratings.match(/(rapid)(\d*)/);
-        var blitz = ratings.match(/(blitz)(\d*)/);
-
-        var translated = {
-          'std': std ? std[2] : undefined,
-          'rapid': rapid ? rapid[2] : undefined,
-          'blitz': blitz ? blitz[2] : undefined
+        return {
+          'std':   ratings.match(/(std\.)(\d*)/)[2],
+          'rapid': ratings.match(/(rapid)(\d*)/)[2],
+          'blitz': ratings.match(/(blitz)(\d*)/)[2]
         };
-
-        return translated;
       };
 
       // Remove the cell with the player picture to keep things consistent
@@ -91,14 +87,36 @@ var FIDE = {
       info['name']       = getValue(infoRows.eq(0));
       info['federation'] = getValue(infoRows.eq(1));
       info['title']      = getValue(infoRows.eq(2));
-      info['ratings']    = translateRatings(getValue(infoRows.eq(3)));
+      info['ratings']    = getValue(infoRows.eq(3));
       info['bYear']      = getValue(infoRows.eq(4));
       info['sex']        = getValue(infoRows.eq(5));
+
+      info['ratings']    = translateRatings(info['ratings']);
+      info['titleAbbr']  = self.getTitleAbbr(info['title']);
       
       callback && callback(info);
     };
 
     request.get(url, parseProfile);
+  },
+
+  getTitleAbbr: function(title) {
+    var abbr = '';
+
+    // Known titles on FIDE.com
+    // There might be more or spelling variations
+    switch(title) {
+      case 'Grand Master':           abbr = 'GM'; break;
+      case 'International Master':   abbr = 'IM'; break;
+      case 'FIDE Master':            abbr = 'FM'; break;
+      case 'Candidate Master':       abbr = 'CM'; break;
+      case 'Woman Grand Master':     abbr = 'WGM'; break;
+      case 'Woman Intl. Master':     abbr = 'WIM'; break;
+      case 'Woman FIDE Master':      abbr = 'WFM'; break;
+      case 'Woman Candidate Master': abbr = 'WCM'; break;
+    }
+
+    return abbr;
   }
 };
 
