@@ -49,8 +49,17 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
   
   var printFinger = function(handle, exists, name, title, fideProfileUrl, rating) {
     var text = '';
+    var titleAndName = '';
 
-    if (name && name.length) { text += '"' + handle + '" is ' + title + ' ' + name; }
+    if (name && name.length) { titleAndName = (title ? title + ' ' : '') + name; }
+
+    if (exists) {
+      text += '"' + handle + '"';
+      if (exists === 'public')    { text += ' is ' + titleAndName; }
+      if (exists === 'known')     { text += ' is ' + titleAndName; }
+      if (exists === 'suspected') { text += ' is allegedly ' + titleAndName; }
+    }
+
     if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
     if (fideProfileUrl && fideProfileUrl.length) { text += ' ' + fideProfileUrl; }
 
