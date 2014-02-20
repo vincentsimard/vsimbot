@@ -1,6 +1,7 @@
 'use strict';
 
 var icc = require('./ICC.js');
+var fide = require('./FIDE.js');
 var cpb = require('./ChessPasteBin.js');
 
 var bot, config;
@@ -45,21 +46,35 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
 
   console.message('/icc.finger %s'.input, to, from, handle);
   
-  icc.finger(handle, function(exists, name, title, rating, profileUrl) {
-    if (!exists) { return; }
-
+  var printFinger = function(handle, exists, name, title, fideProfileUrl, rating) {
     var text = '';
 
     if (name && name.length) { text += '"' + handle + '" is ' + title + ' ' + name; }
     if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
-    if (profileUrl && profileUrl.length) { text += ' ' + profileUrl; }
+    if (fideProfileUrl && fideProfileUrl.length) { text += ' ' + fideProfileUrl; }
 
-    // @TODO: Distinguish if account doesn't exist or if publicinfo is disabled?
-    //        Currently not displaying anything if the account doesn't exist
     if (!text.length && exists) { text = 'No public info for "' + handle + '"'; }
 
     notifyChannelAndLogMessage(to, text);
+  };
+
+  icc.finger(handle, function(exists, name, title) {
+    // Not displaying anything if the account doesn't exist
+    if (!exists) { return; }
+
+    fide.getProfileUrl(name, function(fideProfileUrl) {
+      fide.getPlayerInfo(fideProfileUrl, function(fideInfo) {
+        var rating;
+
+        if (fideInfo && fideInfo.ratings && fideInfo.ratings.std) {
+          rating = fideInfo.ratings.std;
+        }
+
+        printFinger(handle, exists, name, title, fideProfileUrl, rating);
+      });
+    });
   });
+
 };
 
 // post pgn to chesspastebin
