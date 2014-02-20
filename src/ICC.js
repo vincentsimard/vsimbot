@@ -43,12 +43,14 @@ var ICC = {
         info.title  = self.getTitle(info.groups);
       });
 
-      for (var i = 0; i < manualLists.length; i++) {
-        info.name = self['lookupPlayer' + manualLists[i]](handle);
+      if (!info.name) {
+        for (var i = 0; i < manualLists.length; i++) {
+          info.name = self['lookupPlayer' + manualLists[i]](handle);
 
-        if (info.name) {
-          exists = manualLists[i].toLowerCase();
-          break;
+          if (info.name) {
+            exists = manualLists[i].toLowerCase();
+            break;
+          }
         }
       }
 
