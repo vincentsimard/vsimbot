@@ -3,6 +3,8 @@
 var cheerio = require('cheerio');
 var request = require('request');
 
+var Utils = require('./Utils.js');
+
 // @TODO: This module is a mess
 // @TODO: Manually lookup some known players
 
@@ -58,17 +60,17 @@ var ICC = {
   },
 
   // Note: using 'site:ratings.fide'.com instead of
-  //       'site:ratings.fide/card.phtml?event'. In some cases, google only
-  //       has the view games page in the results so we use the id from that
-  //       page and build the profile page url
+  //       'site:ratings.fide/card.phtml?event'. In some cases, google doesn't
+  //       have the profile page in the results so we use the id from another
+  //       related fide page and manually build the profile page url
   //       (e.g.: Andrei Valeryevich Rychagov)
   getFideUrl: function(name, callback) {
     if (!name) { callback(); return; }
 
     var self = this;
     var site = '+site%3Aratings.fide.com';
-    var googleUrl = 'http://google.com/search?q=';
-    var url = googleUrl + name + site;
+    var googleQueryUrl = 'http://google.com/search?q=';
+    var url = googleQueryUrl + name + site;
 
     var parseGooglePage = function(err, response, html) {
       if (err) { return console.error(err); }
@@ -77,12 +79,23 @@ var ICC = {
       var profileBaseUrl = 'http://ratings.fide.com/card.phtml?event=';
       var $ = cheerio.load(html);
 
-      googleResultUrl = $('#ires li cite').first().text();
+      var getId = function(url) {
+        var fideUrl = Utils.getParameterByName(url, 'q');
+        var id;
 
-      if (!googleResultUrl.length) {
+        id = Utils.getParameterByName(fideUrl, 'event'); // Profile card page (expected)
+        if (!id) { id = Utils.getParameterByName(fideUrl, 'id'); } // View games page
+        if (!id) { id = Utils.getParameterByName(fideUrl, 'idnumber'); } // Individual calculations page
+
+        return id;
+      };
+
+      googleResultUrl = $('#ires li h3 > a').first().attr('href');
+      id = getId(googleResultUrl);
+
+      if (!id.length) {
         if (callback) { callback(); }
       } else {
-        id = googleResultUrl.match(/[^=]*$/i);
         profileUrl = profileBaseUrl + id;
 
         self.fingerFide(profileUrl, function(rating) {
