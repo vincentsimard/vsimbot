@@ -4,9 +4,9 @@ var cheerio = require('cheerio');
 var request = require('request');
 
 // @TODO: This module is a mess
+// @TODO: Manually lookup some known players
 
 var ICC = {
-  // @TODO: Print fide/uscf rating? URL to fide profile?
   finger: function(handle, callback) {
     var self = this;
     var url = 'http://www6.chessclub.com/finger/' + handle;
@@ -57,27 +57,34 @@ var ICC = {
     return title;
   },
 
+  // Note: using 'site:ratings.fide'.com instead of
+  //       'site:ratings.fide/card.phtml?event'. In some cases, google only
+  //       has the view games page in the results so we use the id from that
+  //       page and build the profile page url
+  //       (e.g.: Andrei Valeryevich Rychagov)
   getFideUrl: function(name, callback) {
     if (!name) { callback(); return; }
 
     var self = this;
-    var site = '+site%3Aratings.fide.com%2Fcard.phtml';
+    var site = '+site%3Aratings.fide.com';
     var googleUrl = 'http://google.com/search?q=';
     var url = googleUrl + name + site;
 
     var parseGooglePage = function(err, response, html) {
-      var profileUrl;
-      var urlPrefix = 'http://';
-
       if (err) { return console.error(err); }
 
+      var id, googleResultUrl, profileUrl;
+      var profileBaseUrl = 'http://ratings.fide.com/card.phtml?event=';
       var $ = cheerio.load(html);
 
-      profileUrl = urlPrefix + $('#ires li cite').first().text();
+      googleResultUrl = $('#ires li cite').first().text();
 
-      if (profileUrl === urlPrefix) {
+      if (!googleResultUrl.length) {
         if (callback) { callback(); }
       } else {
+        id = googleResultUrl.match(/[^=]*$/i);
+        profileUrl = profileBaseUrl + id;
+
         self.fingerFide(profileUrl, function(rating) {
           if (callback) { callback(rating, profileUrl); }
         });

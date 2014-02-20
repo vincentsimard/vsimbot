@@ -3,6 +3,7 @@
 'use strict';
 
 // @TODO: Manage challenger queue
+// @TODO: Log network connection loss/disconnections
 
 var irc = require('irc');
 var fs = require('fs');

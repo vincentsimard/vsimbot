@@ -37,7 +37,7 @@ var fenRE = "" +
 var patterns = {};
 
 // finger icc
-patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, junk, match) {
+patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, raw, match) {
   var handle;
 
   handle = match[2];
@@ -63,18 +63,18 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, j
 };
 
 // post pgn to chesspastebin
-patterns[pgnRE] = function(from, to, message, junk, match) {
-  addToChessPasteBin(from, to, message, junk, match);
+patterns[pgnRE] = function(from, to, message, raw, match) {
+  addToChessPasteBin(from, to, message, raw, match);
 };
 
 // post fen to chesspastebin
-patterns[fenRE] = function(from, to, message, junk, match) {
-  addToChessPasteBin(from, to, message, junk, match, true);
+patterns[fenRE] = function(from, to, message, raw, match) {
+  addToChessPasteBin(from, to, message, raw, match, true);
 };
 
 
 
-var addToChessPasteBin = function(from, to, message, junk, match, isFEN) {
+var addToChessPasteBin = function(from, to, message, raw, match, isFEN) {
   var pgn = match[0];
   var format = isFEN ? 'FEN' : 'PGN';
   var fnName = 'add' + format;
@@ -143,6 +143,12 @@ var EventHandlers = {
       }
     }
   },
+
+  /*
+  "raw": function(message) {
+    console.log(JSON.stringify(message));
+  },
+  */
 
   init: function(ircClient, botConfig) {
     var events = Object.keys(EventHandlers);
