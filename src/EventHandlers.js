@@ -21,6 +21,7 @@ var pgnRE = "(" +
   ")";
 
 // Thanks to http://chess.stackexchange.com/questions/1482/how-to-know-when-a-fen-position-is-legal
+// Halfmove clock and fullmove number are optional
 var fenREPiecePlacement = "([rnbqkpRNBQKP1-8]+\\/){7}([rnbqkpRNBQKP1-8]+)";
 var fenREActiveColor = "[bw-]";
 var fenRECastlingAvailability = "(([a-hkqA-HKQ]{1,4})|(-))";
@@ -58,11 +59,11 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
     notifyChannelAndLogMessage(to, text);
   };
 
-  icc.finger(handle, function(exists, name, title) {
+  icc.finger(handle, function(exists, iccInfo) {
     // Not displaying anything if the account doesn't exist
     if (!exists) { return; }
 
-    fide.getProfileUrl(name, function(fideProfileUrl) {
+    fide.getProfileUrl(iccInfo.name, function(fideProfileUrl) {
       fide.getPlayerInfo(fideProfileUrl, function(fideInfo) {
         var rating;
 
@@ -70,7 +71,7 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
           rating = fideInfo.ratings.std;
         }
 
-        printFinger(handle, exists, name, title, fideProfileUrl, rating);
+        printFinger(handle, exists, iccInfo.name, iccInfo.title, fideProfileUrl, rating);
       });
     });
   });

@@ -70,10 +70,14 @@ var FIDE = {
       };
 
       var translateRatings = function(ratings) {
+        var stdMatch   = ratings.match(/(std\.)(\d*)/);
+        var rapidMatch = ratings.match(/(rapid)(\d*)/);
+        var blitzMatch = ratings.match(/(blitz)(\d*)/);
+
         return {
-          'std':   ratings.match(/(std\.)(\d*)/)[2],
-          'rapid': ratings.match(/(rapid)(\d*)/)[2],
-          'blitz': ratings.match(/(blitz)(\d*)/)[2]
+          'std':   stdMatch   ? stdMatch[2]   : undefined,
+          'rapid': rapidMatch ? rapidMatch[2] : undefined,
+          'blitz': blitzMatch ? blitzMatch[2] : undefined
         };
       };
 
@@ -84,15 +88,15 @@ var FIDE = {
       infoHtml = $('#middle .contentpaneopen table[width="480"][height="10"]');
       infoRows = infoHtml.children('tr');
 
-      info['name']       = getValue(infoRows.eq(0));
-      info['federation'] = getValue(infoRows.eq(1));
-      info['title']      = getValue(infoRows.eq(2));
-      info['ratings']    = getValue(infoRows.eq(3));
-      info['bYear']      = getValue(infoRows.eq(4));
-      info['sex']        = getValue(infoRows.eq(5));
+      info.name       = getValue(infoRows.eq(0));
+      info.federation = getValue(infoRows.eq(1));
+      info.title      = getValue(infoRows.eq(2));
+      info.ratings    = getValue(infoRows.eq(3));
+      info.bYear      = getValue(infoRows.eq(4));
+      info.sex        = getValue(infoRows.eq(5));
 
-      info['ratings']    = translateRatings(info['ratings']);
-      info['titleAbbr']  = self.getTitleAbbr(info['title']);
+      info.ratings    = translateRatings(info.ratings);
+      info.titleAbbr  = self.getTitleAbbr(info.title);
       
       callback && callback(info);
     };

@@ -11,8 +11,9 @@ var ICC = {
     var self = this;
     var url = 'http://www6.chessclub.com/finger/' + handle;
 
-    var parseFingerPage = function(err, response, html) {
-      var name, groups, title, exists;
+    var parseFinger = function(err, response, html) {
+      var exists, name, groups, title;
+      var info = {};
 
       if (err) { return console.error(err); }
 
@@ -22,6 +23,7 @@ var ICC = {
         var text = $(element).text();
         var nameRE   = /(Name\s\s\s:)\s(.*)/;
         var groupsRE = /(Groups\s:)\s(.*)/;
+
         var nameMatches, groupsMatches;
 
         // We consider that the accound doesn't exist if:
@@ -32,20 +34,21 @@ var ICC = {
         nameMatches   = text.match(nameRE);
         groupsMatches = text.match(groupsRE);
 
-        if (nameMatches)   { name   = nameMatches[2]; }
-        if (groupsMatches) { groups = groupsMatches[2]; }
-        title = self.getTitle(groups);
+        info.name   = nameMatches ? nameMatches[2] : undefined;
+        info.groups = groupsMatches ? groupsMatches[2] : undefined;
+        info.title  = self.getTitle(info.groups);
       });
 
       // @TODO: Return an object with all fields from finger instead?
-      callback && callback(exists, name, title);
+      // callback && callback(exists, name, title);
+      callback && callback(exists, info);
     };
 
-    request.get(url, parseFingerPage);
+    request.get(url, parseFinger);
   },
 
   getTitle: function(groups) {
-    if (typeof groups === 'undefined') { return ''; }
+    if (typeof groups === 'undefined') { return; }
 
     var title;
     var titleRE = /(GM|IM|FM|WGM|WIM|WFM)s/;
