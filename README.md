@@ -1,7 +1,7 @@
 vsimbot
 =======
 
-vsimbot is an [irc](http://en.wikipedia.org/wiki/Internet_Relay_Chat) bot developed by [vsim](http://twitch.tv/vsim/).
+vsimbot is an [irc](http://en.wikipedia.org/wiki/Internet_Relay_Chat) bot.
 Its features are specific to chess.
 
 **Commands**
