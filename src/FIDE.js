@@ -63,7 +63,8 @@ var FIDE = {
       if (err) { return console.error(err); }
 
       var $ = cheerio.load(html);
-      var info, infoHtml, infoRows;
+      var info = {};
+      var infoHtml, infoRows;
 
       var getValue = function(row) {
         return row.find('td').eq(1).text().trim();
@@ -84,7 +85,6 @@ var FIDE = {
       // Remove the cell with the player picture to keep things consistent
       $('td[background]').remove();
 
-      info = {};
       infoHtml = $('#middle .contentpaneopen table[width="480"][height="10"]');
       infoRows = infoHtml.children('tr');
 
@@ -98,6 +98,8 @@ var FIDE = {
       info.ratings    = translateRatings(info.ratings);
       info.titleAbbr  = self.getTitleAbbr(info.title);
       
+      info.url = url;
+
       callback && callback(info);
     };
 

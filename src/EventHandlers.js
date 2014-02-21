@@ -47,13 +47,22 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
 
   console.message('/icc.finger %s'.input, to, from, handle);
   
-  var printFinger = function(handle, exists, name, title, fideProfileUrl, rating, twitchName) {
-    var text = '';
+  var printFinger = function(handle, exists, iccInfo, fideInfo, twitchName) {
+    if (!iccInfo)  { iccInfo  = {}; }
+    if (!fideInfo) { fideInfo = {}; }
+
+    var text = '"' + handle + '"';
     var titleAndName = '';
+    var rating, title, url;
 
-    if (name && name.length) { titleAndName = (title ? title + ' ' : '') + name; }
+    // Use the FIDE title instead of ICC if possible
+    // ICC profiles can take longer to get updated
+    if (iccInfo.title)      { title = iccInfo.title; }
+    if (fideInfo.titleAbbr) { title = fideInfo.titleAbbr; }
 
-    text += '"' + handle + '"';
+    if (fideInfo.ratings && fideInfo.ratings.std) { rating = fideInfo.ratings.std; }
+
+    titleAndName = (title ? title + ' ' : '') + (iccInfo.name ? iccInfo.name : '');
 
     switch (exists) {
       case 'public':    text += ' is ' + titleAndName; break;
@@ -63,8 +72,8 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
       default: text = '';
     }
 
-    if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
-    if (fideProfileUrl && fideProfileUrl.length) { text += ' ' + fideProfileUrl; }
+    if (rating) { text += ' (FIDE ' + rating + ')'; }
+    if (fideInfo.url) { text += ' ' + fideInfo.url; }
     if (twitchName) { text += '. Follow him at http://twitch.tv/' + twitchName; }
 
     notifyChannelAndLogMessage(to, text);
@@ -76,20 +85,7 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
 
     fide.getProfileUrl(iccInfo.name, function(fideProfileUrl) {
       fide.getPlayerInfo(fideProfileUrl, function(fideInfo) {
-        var rating;
-        var title = iccInfo.title;
-
-        if (fideInfo && fideInfo.ratings && fideInfo.ratings.std) {
-          rating = fideInfo.ratings.std;
-        }
-
-        if (fideInfo && fideInfo.titleAbbr) {
-          // Use the FIDE title instead of ICC if possible
-          // ICC profiles can take longer to get updated
-          title = fideInfo.titleAbbr;
-        }
-
-        printFinger(handle, exists, iccInfo.name, title, fideProfileUrl, rating, twitchName);
+        printFinger(handle, exists, iccInfo, fideInfo, twitchName);
       });
     });
   });

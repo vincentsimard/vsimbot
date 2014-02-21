@@ -53,6 +53,8 @@ var ICC = {
         }
       }
 
+      info.url = url;
+
       twitchName = self.lookupPlayer(handle, 'twitch');
 
       callback && callback(exists, info, twitchName);
