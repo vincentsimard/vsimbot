@@ -169,6 +169,27 @@ var EventHandlers = {
     console.log('*** parted %s'.irc, channel.bold);
   },
 
+  // @TODO: Use config.userName?
+  "message#vsimbot": function(from, message) {
+    var to = '#vsimbot';
+    var match = message.match(/^(join|part)\s?(#?(\w*))?/i);
+    var action, channel;
+
+    if (match) {
+      action = match[1];
+      channel = '#' + from;
+
+      // @TODO: Allow users to specify which channel to join?
+      // channel = match[3].length ? '#' + match[3] : channel;
+
+      console.message('/%s %s'.input, to, from, action, channel);
+
+      // @TODO: Save channels to join in config?
+      bot[action](channel);
+      notifyChannelAndLogMessage(to, action + 'ing ' + channel);
+    }
+  },
+
   "message#": function(from, to, message) {
     var match;
     var args = Array.prototype.slice.call(arguments, 0);
