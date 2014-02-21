@@ -76,12 +76,19 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
     fide.getProfileUrl(iccInfo.name, function(fideProfileUrl) {
       fide.getPlayerInfo(fideProfileUrl, function(fideInfo) {
         var rating;
+        var title = iccInfo.title;
 
         if (fideInfo && fideInfo.ratings && fideInfo.ratings.std) {
           rating = fideInfo.ratings.std;
         }
 
-        printFinger(handle, exists, iccInfo.name, iccInfo.title, fideProfileUrl, rating);
+        if (fideInfo && fideInfo.titleAbbr) {
+          // Use the FIDE title instead of ICC if possible
+          // ICC profiles can take longer to get updated
+          title = fideInfo.titleAbbr;
+        }
+
+        printFinger(handle, exists, iccInfo.name, title, fideProfileUrl, rating);
       });
     });
   });
