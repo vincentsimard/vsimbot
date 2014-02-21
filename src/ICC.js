@@ -33,14 +33,15 @@ var ICC = {
         //   - The handle matches more than one player
         exists = !text.match(/(does\snot\smatch\sany\splayer)|(matches\sat\sleast)/i);
 
-        if (exists) { exists = 'public'; }
-
         nameMatches   = text.match(nameRE);
         groupsMatches = text.match(groupsRE);
 
         info.name   = nameMatches ? nameMatches[2] : undefined;
         info.groups = groupsMatches ? groupsMatches[2] : undefined;
         info.title  = self.getTitle(info.groups);
+
+        // Mixing boolean and string enum is not great (current values: true, false, public, known, suspected)
+        if (exists) { exists = info.name ? 'public' : 'notpublic'; }
       });
 
       if (!info.name) {

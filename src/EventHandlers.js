@@ -53,17 +53,18 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
 
     if (name && name.length) { titleAndName = (title ? title + ' ' : '') + name; }
 
-    if (exists) {
-      text += '"' + handle + '"';
-      if (exists === 'public')    { text += ' is ' + titleAndName; }
-      if (exists === 'known')     { text += ' is ' + titleAndName; }
-      if (exists === 'suspected') { text += ' is allegedly ' + titleAndName; }
+    text += '"' + handle + '"';
+
+    switch (exists) {
+      case 'public':    text += ' is ' + titleAndName; break;
+      case 'known':     text += ' is ' + titleAndName; break;
+      case 'suspected': text += ' is allegedly ' + titleAndName; break;
+      case 'notpublic': text = 'No public info for "' + handle + '"'; break;
+      default: text = '';
     }
 
     if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
     if (fideProfileUrl && fideProfileUrl.length) { text += ' ' + fideProfileUrl; }
-
-    if (!text.length && exists) { text = 'No public info for "' + handle + '"'; }
 
     notifyChannelAndLogMessage(to, text);
   };
