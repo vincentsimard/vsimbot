@@ -11,7 +11,7 @@ var ICC = {
     var url = 'http://www6.chessclub.com/finger/' + handle;
 
     var parseFinger = function(err, response, html) {
-      var exists, name, groups, title;
+      var exists, name, groups, title, twitchName;
       var lists = ['known', 'suspected'];
       var info = {};
 
@@ -53,7 +53,9 @@ var ICC = {
         }
       }
 
-      callback && callback(exists, info);
+      twitchName = self.lookupPlayer(handle, 'twitch');
+
+      callback && callback(exists, info, twitchName);
     };
 
     request.get(url, parseFinger);

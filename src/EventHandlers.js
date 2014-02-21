@@ -47,7 +47,7 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
 
   console.message('/icc.finger %s'.input, to, from, handle);
   
-  var printFinger = function(handle, exists, name, title, fideProfileUrl, rating) {
+  var printFinger = function(handle, exists, name, title, fideProfileUrl, rating, twitchName) {
     var text = '';
     var titleAndName = '';
 
@@ -65,11 +65,12 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
 
     if (rating && rating.length) { text += ' (FIDE ' + rating + ')'; }
     if (fideProfileUrl && fideProfileUrl.length) { text += ' ' + fideProfileUrl; }
+    if (twitchName) { text += '. Follow him at http://twitch.tv/' + twitchName; }
 
     notifyChannelAndLogMessage(to, text);
   };
 
-  icc.finger(handle, function(exists, iccInfo) {
+  icc.finger(handle, function(exists, iccInfo, twitchName) {
     // Not displaying anything if the account doesn't exist
     if (!exists) { return; }
 
@@ -88,11 +89,10 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
           title = fideInfo.titleAbbr;
         }
 
-        printFinger(handle, exists, iccInfo.name, title, fideProfileUrl, rating);
+        printFinger(handle, exists, iccInfo.name, title, fideProfileUrl, rating, twitchName);
       });
     });
   });
-
 };
 
 // post pgn to chesspastebin
