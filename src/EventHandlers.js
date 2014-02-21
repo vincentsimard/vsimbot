@@ -90,6 +90,15 @@ patterns["^(finger|fi|who\\sis|who\\'s)\\s(.*)"] = function(from, to, message, r
 
 // post pgn to chesspastebin
 patterns[pgnRE] = function(from, to, message, raw, match) {
+  // additional verification to make sure the first 2 moves are present
+  // to prevent messages like "http://chess-db.com/public/game.jsp?id=14101513.4202848.139710976" to match "14101513.4202848.139710976"
+  if (match &&
+      match[0] &&
+      match[0].indexOf('1.') < 0 &&
+      match[0].indexOf('2.') < 0) {
+    return;
+  }
+  
   addToChessPasteBin(from, to, message, raw, match);
 };
 
