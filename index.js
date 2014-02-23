@@ -35,7 +35,7 @@ var init = function() {
 
   // @TODO: Initialize modules in a cleaner way... maybe?
   cli.init(bot);
-  handlers.init(bot, config, nconf);
+  handlers.init(bot, config);
 
   bot.connect(function() { console.log('*** connected.'.info); });
 };

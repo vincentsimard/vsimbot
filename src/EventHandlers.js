@@ -1,5 +1,6 @@
 'use strict';
 
+var nconf = require('nconf');
 var util = require('util');
 var spawn = require('child_process').spawn;
 
@@ -7,7 +8,7 @@ var icc = require('./ICC.js');
 var fide = require('./FIDE.js');
 var cpb = require('./ChessPasteBin.js');
 
-var bot, config, nconfInstance;
+var bot, config;
 
 // @TODO: This is a very simplistic pgn regexp. No support for variations or comments
 var pgnRENumber = "\\d+\\.\\s*";
@@ -266,8 +267,8 @@ var EventHandlers = {
         });
       }
 
-      nconfInstance.set('channels', channels);
-      nconfInstance.save(function(err) {
+      nconf.set('channels', channels);
+      nconf.save(function(err) {
         if (err) { return console.error(err); }
       });
 
@@ -300,12 +301,11 @@ var EventHandlers = {
   },
   */
 
-  init: function(ircClient, botConfig, nconf) {
+  init: function(ircClient, botConfig) {
     var events = Object.keys(EventHandlers);
     
     bot = ircClient;
     config = botConfig;
-    nconfInstance = nconf;
 
     for (var i=0; i<events.length-1; i++) {
       ircClient.addListener(events[i], EventHandlers[events[i]]);
