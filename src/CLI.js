@@ -67,6 +67,14 @@ console.message = function() {
   console.log.apply(this, args);
 };
 
+// @TODO: Rethink this. Can't be having stuff like this.
+console.say = function(to, text) {
+  bot.say(to, text);
+  console.message('%s', to, 'vsimbot', text);
+  // console.message('%s', to, config.userName, text);
+};
+
+
 
 
 module.exports = CLI;
