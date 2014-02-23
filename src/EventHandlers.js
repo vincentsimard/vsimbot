@@ -1,10 +1,13 @@
 'use strict';
 
+var util = require('util');
+var spawn = require('child_process').spawn;
+
 var icc = require('./ICC.js');
 var fide = require('./FIDE.js');
 var cpb = require('./ChessPasteBin.js');
 
-var bot, config;
+var bot, config, nconfInstance;
 
 // @TODO: This is a very simplistic pgn regexp. No support for variations or comments
 var pgnRENumber = "\\d+\\.\\s*";
@@ -110,9 +113,8 @@ patterns[pgnRE] = function(from, to, message, raw, match) {
 // evaluate position from fen
 // @TODO: This is a mess
 // @TODO: Show recommended move?
+// @TODO: Add timeout with crafty.kill()?
 patterns[evalfenRE] = function(from, to, message, raw, match) {
-  var util = require('util');
-  var spawn = require('child_process').spawn;
   var crafty = spawn('crafty');
   var dataCache = [];
   var fen = match[2];
@@ -240,6 +242,7 @@ var EventHandlers = {
     var to = '#vsimbot';
     var match = message.match(/^(join|part)\s?(#?(\w*))?/i);
     var action, channel;
+    var channels = config.channels;
 
     if (match) {
       action = match[1];
@@ -250,7 +253,24 @@ var EventHandlers = {
 
       console.message('/%s %s'.input, to, from, action, channel);
 
-      // @TODO: Save channels to join in config?
+      // Save channels in config
+      if (action === 'join') {
+        if (channels.indexOf(channel) < 0) {
+          channels.push(channel);
+        }
+      }
+
+      if (action === 'part') {
+        channels = channels.filter(function(value) {
+          return value !== channel;
+        });
+      }
+
+      nconfInstance.set('channels', channels);
+      nconfInstance.save(function(err) {
+        if (err) { return console.error(err); }
+      });
+
       bot[action](channel);
       notifyChannelAndLogMessage(to, action + 'ing ' + channel);
     }
@@ -260,6 +280,7 @@ var EventHandlers = {
     var match;
     var args = Array.prototype.slice.call(arguments, 0);
 
+    // @TODO: This is very slow.
     for (var pattern in patterns) {
       if (patterns.hasOwnProperty(pattern)) {
         match = message.match(new RegExp(pattern, "i"));
@@ -279,11 +300,12 @@ var EventHandlers = {
   },
   */
 
-  init: function(ircClient, botConfig) {
+  init: function(ircClient, botConfig, nconf) {
     var events = Object.keys(EventHandlers);
     
     bot = ircClient;
     config = botConfig;
+    nconfInstance = nconf;
 
     for (var i=0; i<events.length-1; i++) {
       ircClient.addListener(events[i], EventHandlers[events[i]]);
