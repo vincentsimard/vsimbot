@@ -31,11 +31,14 @@ var loadTheme = function(name) {
 };
 
 var init = function() {
+  // @TODO: Remove globals asap
+  global.ircClient = bot;
+
   loadTheme(config.theme);
 
   // @TODO: Initialize modules in a cleaner way... maybe?
   cli.init(bot);
-  handlers.init(bot, config);
+  handlers.init(bot);
 
   bot.connect(function() { console.log('*** connected.'.info); });
 };

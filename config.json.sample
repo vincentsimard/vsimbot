@@ -13,7 +13,7 @@
   "selfSigned": false,
   "certExpired": false,
   "floodProtection": true,
-  "floodProtectionDelay": 1000,
+  "floodProtectionDelay": 2000,
   "sasl": false,
   "stripColors": false,
   "channelPrefixes": "&#",
