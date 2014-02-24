@@ -1,6 +1,7 @@
 'use strict';
 
 var client = require('./Client.js');
+var handlers = require('./EventHandlers.js');
 
 var commands = {
   connect: function() { client.connect(function() { console.log('*** connected.'.info); }); },
@@ -17,7 +18,9 @@ var commands = {
     message = matches[2];
 
     client.say(channel, message);
-  }
+  },
+  addHandler: handlers.add,
+  removeHandler: handlers.remove
 };
 
 var CLI = {

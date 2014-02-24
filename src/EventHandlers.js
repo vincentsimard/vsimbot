@@ -6,10 +6,9 @@ var fs = require("fs");
 var client = require('./Client.js');
 
 var config;
+var loadedHandlers = {};
 
 var EventHandlers = {
-  handlersDir: __dirname + '/handlers',
-
   // Common IRC events
   common: {
     /*
@@ -42,9 +41,10 @@ var EventHandlers = {
     }
   },
 
-  addHandler: function(file) {
+  add: function(file) {
     var self = this;
-    var module = require(self.handlersDir + '/' + file);
+    var handlersDir = __dirname + '/handlers';
+    var module = require(handlersDir + '/' + file);
 
     var handler = function() {
       var args = Array.prototype.slice.call(arguments, 0);
@@ -66,11 +66,24 @@ var EventHandlers = {
       }
     };
 
-    client.addListener(module.event, handler);
+    loadedHandlers[file] = handler;
+
+    client.addListener(module.event, loadedHandlers[file]);
+  },
+
+  remove: function(file) {
+    var self = this;
+    var handlersDir = __dirname + '/handlers';
+    var module = require(handlersDir + '/' + file);
+
+    if (typeof module.event === 'undefined') { return; }
+
+    client.removeListener(module.event, loadedHandlers[file]);
   },
 
   init: function() {
     var self = this;
+    var handlersDir = __dirname + '/handlers';
     var events = Object.keys(self.common);
 
     config = nconf.get();
@@ -81,8 +94,8 @@ var EventHandlers = {
 
     // @TODO: Create a way to turn on/off modules from console
     // @TODO: http://jsperf.com/chsspttrns
-    fs.readdirSync(self.handlersDir).forEach(function(file) {
-      self.addHandler(file);
+    fs.readdirSync(handlersDir).forEach(function(file) {
+      self.add(file);
     });
   }
 };
