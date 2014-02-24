@@ -81,6 +81,8 @@ module.exports.listener = function(from, to, message) {
   var args = Array.prototype.slice.call(arguments, 0);
   var match;
 
+  if (message.match(/(eval|evaluate|analyze|score)\s/)) { return; }
+
   match = message.match(new RegExp(pgnRE, "i"));
   if (match) {
     args.push(match);

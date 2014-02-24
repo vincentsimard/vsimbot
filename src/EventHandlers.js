@@ -3,7 +3,7 @@
 var nconf = require('nconf');
 var fs = require("fs");
 
-var config = nconf.get();
+var config;
 
 // Common IRC events
 var EventHandlers = {
@@ -40,11 +40,14 @@ var EventHandlers = {
     var events = Object.keys(EventHandlers);
     var handlersDir = __dirname + '/handlers';
 
+    config = nconf.get();
+
     for (var i=0; i<events.length-1; i++) {
       ircClient.addListener(events[i], EventHandlers[events[i]]);
     }
 
     // @TODO: Create a way to turn on/off modules from console
+    // @TODO: http://jsperf.com/chsspttrns
     fs.readdirSync(handlersDir).forEach(function(file) {
       var module = require(handlersDir + '/' + file);
 
