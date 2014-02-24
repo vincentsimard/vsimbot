@@ -61,14 +61,5 @@ var finger = function(from, to, message, raw, match) {
 
 
 module.exports.event = 'message#';
-
-module.exports.listener = function(from, to, message) {
-  var pattern = "^(finger|fi|who\\sis|who\\'s)\\s(.*)";
-  var args = Array.prototype.slice.call(arguments, 0);
-  var match = message.match(new RegExp(pattern, "i"));
-
-  if (match) {
-    args.push(match);
-    finger.apply(this, args);
-  }
-};
+module.exports.pattern = "^(finger|fi|who\\sis|who\\'s)\\s(.*)";
+module.exports.handler = finger;

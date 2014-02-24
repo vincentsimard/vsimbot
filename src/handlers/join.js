@@ -50,14 +50,6 @@ var channelAction = function(from, message, raw, match) {
 
 
 module.exports.event = 'message#' + nconf.get('userName');
+module.exports.pattern = "^(join|part)\\s?(#?(\\w*))?";
+module.exports.handler = channelAction;
 
-module.exports.listener = function(from, message) {
-  var pattern = "^(join|part)\\s?(#?(\\w*))?";
-  var args = Array.prototype.slice.call(arguments, 0);
-  var match = message.match(new RegExp(pattern, "i"));
-
-  if (match) {
-    args.push(match);
-    channelAction.apply(this, args);
-  }
-};

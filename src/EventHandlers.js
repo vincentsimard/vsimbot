@@ -53,11 +53,29 @@ var EventHandlers = {
     fs.readdirSync(handlersDir).forEach(function(file) {
       var module = require(handlersDir + '/' + file);
 
-      // @TODO: Log error if event or listener is undefined?
-      if (typeof module.event === 'undefined') { return; }
-      if (typeof module.listener === 'undefined') { return; }
+      console.log(module.pattern);
 
-      client.addListener(module.event, module.listener);
+      client.addListener(module.event, function() {
+        var args = Array.prototype.slice.call(arguments, 0);
+        var message = args[args.length-2];
+        var match = message.match(new RegExp(module.pattern, "i"));
+
+        // @TODO: Log error if require property is undefined?
+        if (typeof module.event === 'undefined') { return; }
+        if (typeof module.pattern === 'undefined') { return; }
+        if (typeof module.handler === 'undefined') { return; }
+
+        if (typeof module.condition === 'function') {
+          if (!module.condition(message)) { return; }
+        }
+
+        if (match) {
+          args.push(match);
+          module.handler.apply(this, args);
+        }
+      });
+
+      // client.addListener(module.event, module.listener);
     });
   }
 };

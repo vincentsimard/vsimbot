@@ -72,33 +72,21 @@ var evalFEN = function(from, to, message, raw, match) {
   crafty.stdin.write('quit\n');
 };
 
-
+var fenREPiecePlacement = "([rnbqkpRNBQKP1-8]+\\/){7}([rnbqkpRNBQKP1-8]+)";
+var fenREActiveColor = "[bw-]";
+var fenRECastlingAvailability = "(([a-hkqA-HKQ]{1,4})|(-))";
+var fenREEnPassantTarget = "(([a-h][36])|(-))";
+var fenREHalfMoveClock = "\\d*";
+var fenREFullMoveNumber = "\\d*";
+var fenRE = "" +
+  fenREPiecePlacement + "\\s" +
+  fenREActiveColor + "\\s" +
+  fenRECastlingAvailability + "\\s" +
+  fenREEnPassantTarget + "\\s?" +
+  fenREHalfMoveClock + "\\s?" +
+  fenREFullMoveNumber;
+var evalfenRE = "(eval|evaluate|analyze|score)\\s(" + fenRE + ")";
 
 module.exports.event = 'message#';
-
-module.exports.listener = function(from, to, message) {
-  // Thanks to http://chess.stackexchange.com/questions/1482/how-to-know-when-a-fen-position-is-legal
-  // Halfmove clock and fullmove number are optional
-  var fenREPiecePlacement = "([rnbqkpRNBQKP1-8]+\\/){7}([rnbqkpRNBQKP1-8]+)";
-  var fenREActiveColor = "[bw-]";
-  var fenRECastlingAvailability = "(([a-hkqA-HKQ]{1,4})|(-))";
-  var fenREEnPassantTarget = "(([a-h][36])|(-))";
-  var fenREHalfMoveClock = "\\d*";
-  var fenREFullMoveNumber = "\\d*";
-  var fenRE = "" +
-    fenREPiecePlacement + "\\s" +
-    fenREActiveColor + "\\s" +
-    fenRECastlingAvailability + "\\s" +
-    fenREEnPassantTarget + "\\s?" +
-    fenREHalfMoveClock + "\\s?" +
-    fenREFullMoveNumber;
-
-  var pattern = "(eval|evaluate|analyze|score)\\s(" + fenRE + ")";
-  var args = Array.prototype.slice.call(arguments, 0);
-  var match = message.match(new RegExp(pattern, "i"));
-
-  if (match) {
-    args.push(match);
-    evalFEN.apply(this, args);
-  }
-};
+module.exports.pattern = evalfenRE;
+module.exports.handler = evalFEN;
