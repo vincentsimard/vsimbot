@@ -7,25 +7,19 @@ var cpb = require('./../ChessPasteBin.js');
 
 // post FEN to chesspastebin
 var addFEN = function(from, to, message, raw, match) {
-  addToChessPasteBin(from, to, message, raw, match, true);
-};
+  var fen = match[0];
 
-var addToChessPasteBin = function(from, to, message, raw, match, isFEN) {
-  var pgn = match[0];
-  var format = isFEN ? 'FEN' : 'PGN';
-  var fnName = 'add' + format;
+  console.message('/chesspastebin.addFEN %s'.input, to, from, fen);
 
-  console.message('/chesspastebin.%s %s'.input, to, from, fnName, pgn);
-
-  cpb[fnName](nconf.get('chesspastebinAPIKey'), pgn, from, undefined, nconf.get('chesspastebinSandbox'), function(data) {
+  cpb.addFEN(nconf.get('chesspastebinAPIKey'), fen, from, undefined, nconf.get('chesspastebinSandbox'), function(data) {
     var cpbUrl = 'http://www.chesspastebin.com/?p=';
     var cpbId = data;
     var text = '';
 
     // @TODO: Log error if no id is returned by chesspastebin?
-    if (!isNaN(cpb)) { return; }
+    if (isNaN(cpbId)) { return; }
 
-    text = 'The ' + format + ' posted by ' + from + ' is now available at: ' + cpbUrl + cpbId;
+    text = 'The FEN posted by ' + from + ' is now available at: ' + cpbUrl + cpbId;
 
     console.say(to, text);
   });

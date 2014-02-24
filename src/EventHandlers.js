@@ -53,9 +53,7 @@ var EventHandlers = {
     fs.readdirSync(handlersDir).forEach(function(file) {
       var module = require(handlersDir + '/' + file);
 
-      console.log(module.pattern);
-
-      client.addListener(module.event, function() {
+      var handler = function() {
         var args = Array.prototype.slice.call(arguments, 0);
         var message = args[args.length-2];
         var match = message.match(new RegExp(module.pattern, "i"));
@@ -73,7 +71,9 @@ var EventHandlers = {
           args.push(match);
           module.handler.apply(this, args);
         }
-      });
+      };
+
+      client.addListener(module.event, handler);
 
       // client.addListener(module.event, module.listener);
     });

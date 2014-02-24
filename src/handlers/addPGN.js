@@ -16,29 +16,24 @@ var addPGN = function(from, to, message, raw, match) {
     return;
   }
   
-  addToChessPasteBin(from, to, message, raw, match);
-};
-
-var addToChessPasteBin = function(from, to, message, raw, match, isFEN) {
   var pgn = match[0];
-  var format = isFEN ? 'FEN' : 'PGN';
-  var fnName = 'add' + format;
 
-  console.message('/chesspastebin.%s %s'.input, to, from, fnName, pgn);
+  console.message('/chesspastebin.addPGN %s'.input, to, from, pgn);
 
-  cpb[fnName](nconf.get('chesspastebinAPIKey'), pgn, from, undefined, nconf.get('chesspastebinSandbox'), function(data) {
+  cpb.addPGN(nconf.get('chesspastebinAPIKey'), pgn, from, undefined, nconf.get('chesspastebinSandbox'), function(data) {
     var cpbUrl = 'http://www.chesspastebin.com/?p=';
     var cpbId = data;
     var text = '';
 
     // @TODO: Log error if no id is returned by chesspastebin?
-    if (!isNaN(cpb)) { return; }
+    if (isNaN(cpbId)) { return; }
 
-    text = 'The ' + format + ' posted by ' + from + ' is now available at: ' + cpbUrl + cpbId;
+    text = 'The PGN posted by ' + from + ' is now available at: ' + cpbUrl + cpbId;
 
     console.say(to, text);
   });
 };
+
 
 // @TODO: This is a very simplistic pgn regexp. No support for variations or comments
 var pgnRENumber = "\\d+\\.\\s*";
