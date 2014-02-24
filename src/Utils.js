@@ -30,6 +30,8 @@ var pgnRE = "(" +
   pgnREResult +
   ")";
 
+
+
 module.exports = {
   getParameterByName: function(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
