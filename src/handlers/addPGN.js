@@ -2,6 +2,7 @@
 
 var nconf = require('nconf');
 var cpb = require('./../ChessPasteBin.js');
+var Utils = require('./../Utils.js');
 
 
 
@@ -16,41 +17,27 @@ var addPGN = function(from, to, message, raw, match) {
     return;
   }
   
+  var key = nconf.get('chesspastebinAPIKey');
   var pgn = match[0];
+  var sandbox = nconf.get('chesspastebinSandbox');
 
   console.message('/chesspastebin.addPGN %s'.input, to, from, pgn);
 
-  cpb.addPGN(nconf.get('chesspastebinAPIKey'), pgn, from, undefined, nconf.get('chesspastebinSandbox'), function(data) {
-    var cpbUrl = 'http://www.chesspastebin.com/?p=';
-    var cpbId = data;
-    var text = '';
-
+  cpb.addPGN(key, pgn, from, undefined, sandbox, function(id) {
     // @TODO: Log error if no id is returned by chesspastebin?
-    if (isNaN(cpbId)) { return; }
+    if (isNaN(id)) { return; }
 
-    text = 'The PGN posted by ' + from + ' is now available at: ' + cpbUrl + cpbId;
+    var url = 'http://www.chesspastebin.com/?p=' + id;
+    var text = 'The PGN posted by ' + from + ' is now available at: ' + url;
 
     console.say(to, text);
   });
 };
 
 
-// @TODO: This is a very simplistic pgn regexp. No support for variations or comments
-var pgnRENumber = "\\d+\\.\\s*";
-var pgnREPly = "[\\w\\+\\-#=]{2,8}\\s*";
-var pgnREOnePly = "(" + pgnRENumber + pgnREPly + ")";
-var pgnRETwoPlys = "(" + pgnRENumber + pgnREPly + pgnREPly + "\\s*)";
-var pgnREHeader = "(\\[([^\\]]+)\\]\\s*)*";
-var pgnREResult = "(\\*|1\\-0|0\\-1|0\\.5\\-0\\.5|\\.5\\-\\.5|1\\/2\\-1\\/2)?";
-var pgnRE = "(" +
-  pgnREHeader +
-  pgnRETwoPlys + "{2,}\\s*" +
-  pgnREOnePly + "?" +
-  pgnREResult +
-  ")";
 
 module.exports.event = 'message#';
-module.exports.pattern = pgnRE;
+module.exports.pattern = Utils.pgnRE;
 module.exports.handler = addPGN;
 module.exports.condition = function(message) {
   return !message.match(/(eval|evaluate|analyze|score)\s/);

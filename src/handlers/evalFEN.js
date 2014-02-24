@@ -3,6 +3,7 @@
 var util = require('util');
 var child_process = require('child_process');
 var nconf = require('nconf');
+var Utils = require('./../Utils.js');
 
 
 
@@ -72,21 +73,8 @@ var evalFEN = function(from, to, message, raw, match) {
   crafty.stdin.write('quit\n');
 };
 
-var fenREPiecePlacement = "([rnbqkpRNBQKP1-8]+\\/){7}([rnbqkpRNBQKP1-8]+)";
-var fenREActiveColor = "[bw-]";
-var fenRECastlingAvailability = "(([a-hkqA-HKQ]{1,4})|(-))";
-var fenREEnPassantTarget = "(([a-h][36])|(-))";
-var fenREHalfMoveClock = "\\d*";
-var fenREFullMoveNumber = "\\d*";
-var fenRE = "" +
-  fenREPiecePlacement + "\\s" +
-  fenREActiveColor + "\\s" +
-  fenRECastlingAvailability + "\\s" +
-  fenREEnPassantTarget + "\\s?" +
-  fenREHalfMoveClock + "\\s?" +
-  fenREFullMoveNumber;
-var evalfenRE = "(eval|evaluate|analyze|score)\\s(" + fenRE + ")";
+
 
 module.exports.event = 'message#';
-module.exports.pattern = evalfenRE;
+module.exports.pattern = "(eval|evaluate|analyze|score)\\s(" + Utils.fenRE + ")";
 module.exports.handler = evalFEN;

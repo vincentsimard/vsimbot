@@ -74,8 +74,6 @@ var EventHandlers = {
       };
 
       client.addListener(module.event, handler);
-
-      // client.addListener(module.event, module.listener);
     });
   }
 };
