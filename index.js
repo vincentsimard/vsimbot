@@ -5,11 +5,10 @@
 // @TODO: Manage challenger queue
 // @TODO: Log network connection loss/disconnections
 
-var irc = require('irc');
-var fs = require('fs');
 var nconf = require('nconf');
 var colors = require('colors');
 
+var client = require('./src/Client.js');
 var cli = require('./src/CLI.js');
 var handlers = require('./src/EventHandlers.js');
 
@@ -18,8 +17,6 @@ var config = nconf
   .env()
   .file({ file: 'config.json' })
   .get();
-
-var bot = new irc.Client(config.server, config.userName, config);
 
 // @TODO: Move theme init to separate module?
 var loadTheme = function(name) {
@@ -31,16 +28,13 @@ var loadTheme = function(name) {
 };
 
 var init = function() {
-  // @TODO: Remove globals asap
-  global.ircClient = bot;
-
   loadTheme(config.theme);
 
   // @TODO: Initialize modules in a cleaner way... maybe?
-  cli.init(bot);
-  handlers.init(bot);
+  cli.init();
+  handlers.init();
 
-  bot.connect(function() { console.log('*** connected.'.info); });
+  client.connect(function() { console.log('*** connected.'.info); });
 };
 
 

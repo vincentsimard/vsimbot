@@ -3,6 +3,8 @@
 var nconf = require('nconf');
 var fs = require("fs");
 
+var client = require('./Client.js');
+
 var config;
 
 // Common IRC events
@@ -36,14 +38,14 @@ var EventHandlers = {
   "raw": function(message) { console.log(JSON.stringify(message)); },
   */
 
-  init: function(ircClient) {
+  init: function() {
     var events = Object.keys(EventHandlers);
     var handlersDir = __dirname + '/handlers';
 
     config = nconf.get();
 
     for (var i=0; i<events.length-1; i++) {
-      ircClient.addListener(events[i], EventHandlers[events[i]]);
+      client.addListener(events[i], EventHandlers[events[i]]);
     }
 
     // @TODO: Create a way to turn on/off modules from console
@@ -55,7 +57,7 @@ var EventHandlers = {
       if (typeof module.event === 'undefined') { return; }
       if (typeof module.listener === 'undefined') { return; }
 
-      ircClient.addListener(module.event, module.listener);
+      client.addListener(module.event, module.listener);
     });
   }
 };

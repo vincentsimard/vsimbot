@@ -1,12 +1,12 @@
 'use strict';
 
-var bot;
+var client = require('./Client.js');
 
 var commands = {
-  connect: function() { bot.connect(function() { console.log('*** connected.'.info); }); },
-  disconnect: function() { bot.disconnect(); },
-  join: function(channel) { bot.join(channel); },
-  part: function(channel) { bot.part(channel); },
+  connect: function() { client.connect(function() { console.log('*** connected.'.info); }); },
+  disconnect: function() { client.disconnect(); },
+  join: function(channel) { client.join(channel); },
+  part: function(channel) { client.part(channel); },
   say: function(args) {
     var matches = args.match(/^(#\w+)\s(.*)/); // #[channelname] [message]
     var channel, message;
@@ -16,16 +16,12 @@ var commands = {
     channel = matches[1];
     message = matches[2];
 
-    bot.say(channel, message);
+    client.say(channel, message);
   }
 };
 
 var CLI = {
-  init: function(ircClient) {
-    if (typeof ircClient === 'undefined') { return; }
-
-    bot = ircClient;
-
+  init: function() {
     process.openStdin().on('data', function(chunk) {
       var chunk = chunk + '';
       var matches = chunk.match(/^\/(\w+)\s(.*)/);
@@ -69,7 +65,7 @@ console.message = function() {
 
 // @TODO: Rethink this. Can't be having stuff like this.
 console.say = function(to, text) {
-  bot.say(to, text);
+  client.say(to, text);
   console.message('%s', to, 'vsimbot', text);
   // console.message('%s', to, config.userName, text);
 };

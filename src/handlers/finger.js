@@ -1,5 +1,9 @@
+'use strict';
+
 var ICC = require('./../ICC.js');
 var FIDE = require('./../FIDE.js');
+
+
 
 // finger icc
 var finger = function(from, to, message, raw, match) {

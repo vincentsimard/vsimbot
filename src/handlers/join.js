@@ -1,4 +1,9 @@
+'use strict';
+
 var nconf = require('nconf');
+var client = require('./../Client.js');
+
+
 
 // join/part channel and save to config
 var channelAction = function(from, message, raw, match) {
@@ -38,7 +43,7 @@ var channelAction = function(from, message, raw, match) {
     if (err) { return console.error(err); }
   });
 
-  global.ircClient[action](channel);
+  client[action](channel);
   console.say(to, action + 'ing ' + channel);
 };
 

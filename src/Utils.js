@@ -1,3 +1,5 @@
+'use strict';
+
 exports.getParameterByName = function(url, name) {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");

@@ -1,11 +1,12 @@
 'use strict';
 
-// var request = require('request');
 var http = require('http');
 
 var CPB = {
   /*
-  // @TODO: I'd much rather use 'request' but I'm getting 'INVALID REQUEST' from cpb. bah!
+  // @TODO: I'd much rather use 'request' but I'm getting 'INVALID REQUEST' from cpb. bah!  
+
+  var request = require('request');
   add: function(apikey, pgn, name, email, sandbox, callback) {
     var url = 'http://www.chesspastebin.com/api/add/';
 

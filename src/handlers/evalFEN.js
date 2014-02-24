@@ -1,3 +1,5 @@
+'use strict';
+
 var util = require('util');
 var child_process = require('child_process');
 var nconf = require('nconf');

@@ -17,7 +17,6 @@ var FIDE = {
       return;
     }
 
-    var self = this;
     var site = '+site%3Aratings.fide.com';
     var googleQueryUrl = 'http://google.com/search?q=';
     var url = googleQueryUrl + name + site;
