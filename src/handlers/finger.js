@@ -61,5 +61,5 @@ var finger = function(from, to, message, raw, match) {
 
 
 module.exports.event = 'message#';
-module.exports.pattern = "^(finger|fi|who\\sis|who\\'s)\\s(.*)";
+module.exports.pattern = "^(finger|fi|who\\sis|who\\'s)\\s([^\\s]+)";
 module.exports.handler = finger;
