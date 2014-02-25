@@ -41,7 +41,7 @@ var EventHandlers = {
     }
   },
 
-  add: function(file) {
+  add: function(file, verbose) {
     var self = this;
     var handlersDir = __dirname + '/handlers';
     var module = require(handlersDir + '/' + file);
@@ -51,7 +51,6 @@ var EventHandlers = {
       var message = args[args.length-2];
       var match = message.match(new RegExp(module.pattern, "i"));
 
-      // @TODO: Log error if require property is undefined?
       if (typeof module.event === 'undefined') { return; }
       if (typeof module.pattern === 'undefined') { return; }
       if (typeof module.handler === 'undefined') { return; }
@@ -69,9 +68,11 @@ var EventHandlers = {
     loadedHandlers[file] = handler;
 
     client.addListener(module.event, loadedHandlers[file]);
+
+    if (verbose) { console.log('Added module: ' + file); }
   },
 
-  remove: function(file) {
+  remove: function(file, verbose) {
     var self = this;
     var handlersDir = __dirname + '/handlers';
     var module = require(handlersDir + '/' + file);
@@ -79,6 +80,8 @@ var EventHandlers = {
     if (typeof module.event === 'undefined') { return; }
 
     client.removeListener(module.event, loadedHandlers[file]);
+
+    if (verbose) { console.log('Removed module: ' + file); }
   },
 
   init: function() {

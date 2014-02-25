@@ -1,5 +1,6 @@
 'use strict';
 
+var nconf = require('nconf');
 var client = require('./Client.js');
 var handlers = require('./EventHandlers.js');
 
@@ -66,11 +67,9 @@ console.message = function() {
   console.log.apply(this, args);
 };
 
-// @TODO: Rethink this. Can't be having stuff like this.
 console.say = function(to, text) {
   client.say(to, text);
-  console.message('%s', to, 'vsimbot', text);
-  // console.message('%s', to, config.userName, text);
+  console.message('%s', to, nconf.get('userName'), text);
 };
 
 

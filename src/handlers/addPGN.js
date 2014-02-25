@@ -24,7 +24,6 @@ var addPGN = function(from, to, message, raw, match) {
   console.message('/chesspastebin.addPGN %s'.input, to, from, pgn);
 
   cpb.addPGN(key, pgn, from, undefined, sandbox, function(id) {
-    // @TODO: Log error if no id is returned by chesspastebin?
     if (isNaN(id)) { return; }
 
     var url = 'http://www.chesspastebin.com/?p=' + id;

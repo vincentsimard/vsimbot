@@ -11,9 +11,6 @@ var channelAction = function(from, message, raw, match) {
   var action = match[1];
   var channel = '#' + from;
 
-  // @TODO: Allow users to specify which channel to join?
-  // channel = match[3].length ? '#' + match[3] : channel;
-
   console.message('/%s %s'.input, to, from, action, channel);
 
   var channelsAfter = {

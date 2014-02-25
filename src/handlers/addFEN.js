@@ -15,7 +15,6 @@ var addFEN = function(from, to, message, raw, match) {
   console.message('/chesspastebin.addFEN %s'.input, to, from, fen);
 
   cpb.addFEN(key, fen, from, undefined, sandbox, function(id) {
-    // @TODO: Log error if no id is returned by chesspastebin?
     if (isNaN(id)) { return; }
 
     var url = 'http://www.chesspastebin.com/?p=' + id;

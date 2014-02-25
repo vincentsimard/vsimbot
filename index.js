@@ -18,19 +18,16 @@ var config = nconf
   .file({ file: 'config.json' })
   .get();
 
-// @TODO: Move theme init to separate module?
 var loadTheme = function(name) {
-  var THEME_PATH = __dirname + '/src/themes/';
-
   if (typeof name === 'undefined') { name = 'default'; }
-
+  
+  var THEME_PATH = __dirname + '/src/themes/';
   colors.setTheme(THEME_PATH + name + '.js');
 };
 
 var init = function() {
   loadTheme(config.theme);
 
-  // @TODO: Initialize modules in a cleaner way... maybe?
   cli.init();
   handlers.init();
 
