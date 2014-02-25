@@ -41,7 +41,7 @@ var EventHandlers = {
     }
   },
 
-  add: function(file, verbose) {
+  add: function(file, quiet) {
     var self = this;
     var handlersDir = __dirname + '/handlers';
     var module = require(handlersDir + '/' + file);
@@ -69,10 +69,10 @@ var EventHandlers = {
 
     client.addListener(module.event, loadedHandlers[file]);
 
-    if (verbose) { console.log('Added module: ' + file); }
+    if (!quiet) { console.log('Added module: ' + file); }
   },
 
-  remove: function(file, verbose) {
+  remove: function(file, quiet) {
     var self = this;
     var handlersDir = __dirname + '/handlers';
     var module = require(handlersDir + '/' + file);
@@ -81,7 +81,7 @@ var EventHandlers = {
 
     client.removeListener(module.event, loadedHandlers[file]);
 
-    if (verbose) { console.log('Removed module: ' + file); }
+    if (!quiet) { console.log('Removed module: ' + file); }
   },
 
   init: function() {
@@ -98,7 +98,7 @@ var EventHandlers = {
     // @TODO: Create a way to turn on/off modules from console
     // @TODO: http://jsperf.com/chsspttrns
     fs.readdirSync(handlersDir).forEach(function(file) {
-      self.add(file);
+      self.add(file, true);
     });
   }
 };
