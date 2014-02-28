@@ -25,5 +25,6 @@ var printECO = function(from, to, message, raw, match) {
 
 
 module.exports.event = 'message#';
+// module.exports.pattern = "(eco)\\s\"?([a-e][0-9]{2})\"?"; // pattern that also matches pgn headers
 module.exports.pattern = "(eco)\\s([a-e][0-9]{2})";
 module.exports.handler = printECO;
