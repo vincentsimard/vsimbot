@@ -26,7 +26,8 @@
     "cheerio": "~0.13.1",
     "request": "~2.33.0",
     "colors": "~0.6.2",
-    "moment": "~2.5.1"
+    "moment": "~2.5.1",
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "chai": "~1.9.0",

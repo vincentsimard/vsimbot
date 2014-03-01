@@ -1,6 +1,7 @@
 'use strict';
 
 var nconf = require('nconf');
+var _ = require('underscore');
 var client = require('./Client.js');
 var handlers = require('./EventHandlers.js');
 
@@ -20,6 +21,7 @@ var commands = {
 
     client.say(channel, message);
   },
+  channels: function() { console.log(_.keys(client.chans)); },
   addHandler: handlers.add,
   removeHandler: handlers.remove
 };

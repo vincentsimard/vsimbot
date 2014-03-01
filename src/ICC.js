@@ -21,22 +21,26 @@ var ICC = {
 
       $('h1 + pre').map(function(i, element) {
         var text = $(element).text();
+
+        var activityRE = /\s\((.*)\)\:/;
         var nameRE   = /(Name\s\s\s:)\s(.*)/;
         var groupsRE = /(Groups\s:)\s(.*)/;
 
-        var nameMatches, groupsMatches;
+        var activityMatches, nameMatches, groupsMatches;
 
         // We consider that the accound doesn't exist if:
         //   - The handle doesn't match any player
         //   - The handle matches more than one player
         exists = !text.match(/(does\snot\smatch\sany\splayer)|(matches\sat\sleast)/i);
 
-        nameMatches   = text.match(nameRE);
-        groupsMatches = text.match(groupsRE);
+        activityMatches = text.match(activityRE);
+        nameMatches     = text.match(nameRE);
+        groupsMatches   = text.match(groupsRE);
 
-        info.name   = nameMatches ? nameMatches[2] : undefined;
-        info.groups = groupsMatches ? groupsMatches[2] : undefined;
-        info.title  = self.getTitle(info.groups);
+        info.activity = activityMatches ? activityMatches[1] : undefined;
+        info.name     = nameMatches ? nameMatches[2] : undefined;
+        info.groups   = groupsMatches ? groupsMatches[2] : undefined;
+        info.title    = self.getTitle(info.groups);
 
         // Mixing boolean and string enum is not great (current values: true, false, public, known, suspected)
         if (exists) { exists = info.name ? 'public' : 'notpublic'; }
