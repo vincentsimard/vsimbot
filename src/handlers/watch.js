@@ -2,10 +2,16 @@
 
 var ICC = require('./../ICC.js');
 
+// @TODO: Way to disable a watch
+// @TODO: CLI command to list all watches
+// @TODO: Restrict the number of watch handlers?
 
 
 // polls icc and prints when the user goes online/offline
 var watch = function(from, to, message, raw, match) {
+  // Restrict to channel owner only
+  if (!(from === 'vsim' || '#' + from === to)) { return; }
+  
   var handle;
 
   handle = match[2];
