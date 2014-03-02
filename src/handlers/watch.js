@@ -21,11 +21,11 @@ var watch = function(from, to, message, raw, match) {
 
   console.message('/watch %s'.input, to, from, handle);
 
-  var watched = _.where(intervals, { handle: handle, channel: to });
+  var watched = _.where(intervals, { channel: to, handle: handle });
   var isWatched = !!watched.length;
 
   if (isWatched) {
-    removeAlert(to, handle, watched.id);
+    removeAlert(to, handle, watched.io);
   } else {
     addAlert(to, handle);
   }
@@ -40,7 +40,7 @@ var addAlert = function(to, handle) {
     var previous = iccInfo.online;
 
     // poll icc
-    var id = setInterval(function() {
+    var intervalObj = setInterval(function() {
       ICC.finger(handle, function(exists, iccInfo, twitchName) {
         if (previous !== iccInfo.online) {
           console.say(to, '"' + handle + '" is ' + (iccInfo.online ? 'online' : 'offline'));
@@ -50,13 +50,16 @@ var addAlert = function(to, handle) {
       });
     }, 60000); // @TODO: Move poll interval to config?
 
-    intervals.push({ id: id, handle: handle, channel: to });
+    intervals.push({ channel: to, handle: handle, io: intervalObj });
   });
 };
 
-var removeAlert = function(to, handle, id) {
-  clearInterval(id);
-  intervals = _.reject(intervals, function(element) { return element.id === id; });
+var removeAlert = function(to, handle, intervalObj) {
+  clearInterval(intervalObj);
+
+  intervals = _.reject(intervals, function(element) {
+    return element.channel === to && element.handle === handle;
+  });
 
   console.say(to, 'Alerts for "' + handle + '" disabled');
 };
