@@ -1,4 +1,5 @@
  {
+  "operator": "vsim",
   "server": "irc.twitch.tv",
   "channels": [],
   "userName": "",

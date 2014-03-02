@@ -1,5 +1,6 @@
 'use strict';
 
+var nconf = require('nconf');
 var ICC = require('./../ICC.js');
 
 // @TODO: Way to disable a watch
@@ -10,7 +11,7 @@ var ICC = require('./../ICC.js');
 // polls icc and prints when the user goes online/offline
 var watch = function(from, to, message, raw, match) {
   // Restrict to channel owner only
-  if (!(from === 'vsim' || '#' + from === to)) { return; }
+  if (!(from === nconf.get('operator') || '#' + from === to)) { return; }
   
   var handle;
 
@@ -18,6 +19,7 @@ var watch = function(from, to, message, raw, match) {
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
   console.message('/watch %s'.input, to, from, handle);
+  console.say(to, 'Alerts for "' + handle + '" activated');
 
   ICC.finger(handle, function(exists, iccInfo, twitchName) {
     if (!exists) { return; }
@@ -28,7 +30,7 @@ var watch = function(from, to, message, raw, match) {
     setInterval(function() {
       ICC.finger(handle, function(exists, iccInfo, twitchName) {
         if (previous !== iccInfo.online) {
-          console.log('"' + handle + '" is ' + (iccInfo.online ? 'online' : 'offline'));
+          console.say(to, '"' + handle + '" is ' + (iccInfo.online ? 'online' : 'offline'));
 
           previous = iccInfo.online;
         }
