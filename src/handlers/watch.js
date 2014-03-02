@@ -4,7 +4,6 @@ var nconf = require('nconf');
 var _ = require('underscore');
 var ICC = require('./../ICC.js');
 
-// @TODO: Way to disable a watch
 // @TODO: CLI command to list all watches
 // @TODO: Restrict the number of watch handlers?
 
@@ -12,7 +11,7 @@ var intervals = [];
 
 // polls icc and prints when the user goes online/offline
 var watch = function(from, to, message, raw, match) {
-  // Restrict to channel owner only (and bot operator)
+  // restricted to channel owner only (and bot operator)
   if (!(from === nconf.get('operator') || '#' + from === to)) { return; }
   
   var handle;
@@ -49,7 +48,7 @@ var addAlert = function(to, handle) {
           previous = iccInfo.online;
         }
       });
-    }, 60000);
+    }, 60000); // @TODO: Move poll interval to config?
 
     intervals.push({ id: id, handle: handle, channel: to });
   });
