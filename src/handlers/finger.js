@@ -12,6 +12,8 @@ var finger = function(from, to, message, raw, match) {
   handle = match[2];
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
+  if (isBlacklisted(handle)) { return; }
+
   console.message('/icc.finger %s'.input, to, from, handle);
   
   var printFinger = function(handle, exists, iccInfo, fideInfo, twitchName) {
@@ -56,6 +58,25 @@ var finger = function(from, to, message, raw, match) {
       });
     });
   });
+};
+
+var isBlacklisted = function(handle) {
+  var words = [
+    'black',
+    'white',
+    'he',
+    'it',
+    'your',
+    'better',
+    'game',
+    'probably',
+    'talking',
+    'the'
+  ];
+  
+  handle = handle.toLowerCase();
+
+  return words.indexOf(handle) > -1;
 };
 
 
