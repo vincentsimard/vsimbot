@@ -7,6 +7,17 @@ var Utils = require('./../Utils.js');
 
 
 
+var doAprilsFool = function(to) {
+  var delay = Math.floor(Math.random()*20)/10 + 5;
+
+  setTimeout(function() {
+    var moves = Math.floor(Math.random()*50) + 37;
+    var text = 'Mate in ' + moves + ' (time=' + delay + 's, depth=' + moves*2 + ')';
+
+    console.say(to, text);
+  }, Math.floor(delay * 1000));
+};
+
 // evaluate position from fen
 // @TODO: This is a mess
 // @TODO: Show recommended move?
@@ -18,6 +29,9 @@ var evalFEN = function(from, to, message, raw, match) {
   var text = '';
 
   console.message('/eval %s'.input, to, from, fen);
+
+  // doAprilsFool(to);
+  // return;
 
   crafty.stderr.on('data', function (data) {
     // console.log('stderr: ' + data);
