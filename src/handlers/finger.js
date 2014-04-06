@@ -72,7 +72,8 @@ var isBlacklisted = function(handle) {
     'probably',
     'talking',
     'the',
-    'this'
+    'this',
+    'in'
   ];
   
   handle = handle.toLowerCase();
