@@ -3,6 +3,8 @@
 var nconf = require('nconf');
 var _ = require('underscore');
 
+var Chesscom = require('./../Chesscom.js');
+
 
 
 // Handles queue of challengers
@@ -50,11 +52,17 @@ var addChallenger = function(from, to, handle) {
     return;
   }
 
-  // @TODO: Check for a valid chess.com account
+  // Check for a valid chess.com account
+  accountExists(handle, function(exists) {
+    if (!exists) {
+      console.say(to, from + ', ' + handle + ' is not a valid chess.com account.');
+      return;
+    }
+
+    queues[to].push(new Account(from, handle));
   
-  queues[to].push(new Account(from, handle));
-  
-  console.say(to, from + ', you have been added to the queue.');
+    console.say(to, from + ', you have been added to the queue.');
+  });
 };
 
 var commands = {
@@ -132,6 +140,12 @@ var isActive = function(channel) {
 
 var isInQueue = function(from, to) {
   return _.pluck(queues[to], 'twitch').indexOf(from) > -1;
+};
+
+var accountExists = function(handle, callback) {
+  Chesscom.getPlayerInfo(handle, function(exists, chesscomInfo) {
+    callback(exists);
+  });
 };
 
 
