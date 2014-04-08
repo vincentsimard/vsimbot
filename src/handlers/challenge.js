@@ -31,6 +31,7 @@ var challenge = function(from, to, message, raw, match) {
 };
 
 var activeQueues = [];
+var startedQueues = [];
 var queues = {};
 
 var Account = function(twitchName, chessName) {
@@ -41,6 +42,8 @@ var Account = function(twitchName, chessName) {
 };
 
 var addChallenger = function(from, to, handle) {
+  if (!isActive(to)) { return; }
+
   // Check if already in queue
   if (isInQueue(from, to)) {
     console.say(to, from + ', you are already in the queue.');
@@ -54,6 +57,7 @@ var addChallenger = function(from, to, handle) {
       return;
     }
 
+    if (typeof queues[to] === 'undefined') { queues[to] = []; }
     queues[to].push(new Account(from, handle));
   
     console.say(to, from + ', you have been added to the queue.');
@@ -114,11 +118,16 @@ var commands = {
 
     var nextChallenger;
 
-    queues[to].shift();
+    // The first 'next' issued on a challenge prints the first challenger
+    if (startedQueues.indexOf(to) > -1) {
+      queues[to].shift();
+    } else {
+      startedQueues.push(to);
+    }
 
     if (queues[to].length > 0) {
       nextChallenger = queues[to][0];
-      console.say(to, 'Next challenger: ' + nextChallenger.twitch + ' (http://chess.com/members/view/' + nextChallenger.chess + ')');
+      console.say(to, 'Next challenger: ' + nextChallenger.twitch + ' - http://chess.com/members/view/' + nextChallenger.chess);
     } else {
       console.say(to, 'There is no one in the queue.');
     }

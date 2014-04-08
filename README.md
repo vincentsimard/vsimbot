@@ -24,7 +24,7 @@ Its features are specific to chess.
 
 - **challenge [chess.com handle]**: join the queue to challenge the broadcaster to a game. players can only join the queue once and must wait until their name has been removed from the queue to join again.
 
-- **challenge next**: removes the player at the front of the queue and prints the next challenger name
+- **challenge next**: removes the player at the front of the queue and prints the next challenger name (available to channel owner only)
 
 - **challenge queue**: prints the twitch names of players in the queue
 
