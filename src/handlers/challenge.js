@@ -30,13 +30,8 @@ var challenge = function(from, to, message, raw, match) {
   }
 };
 
-var activeQueues = ['#vsimbot'];
-var queues = {
-  '#vsimbot': [
-    { 'twitch': 'vsim', 'chess': 'vsim' },
-    { 'twitch': 'amazingoid', 'chess': 'chesskid' }
-  ]
-};
+var activeQueues = [];
+var queues = {};
 
 var Account = function(twitchName, chessName) {
   return {
