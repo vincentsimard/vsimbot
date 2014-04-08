@@ -12,8 +12,22 @@ Its features are specific to chess.
 
 - **join / part**: joins/parts your channel if the command is issued from this channel
 
-- **eval [fen]** (experimental): prints the engine evaluation of the position
+- **eval [fen]**: prints the engine evaluation of the position
 
 - **eco [eco code]**: prints the name and moves of an opening
 
 - **watch [icc handle]**: enables alerts when a player goes online or offline on ICC (command only available to channel owner). use the same command to disable alerts.
+
+*experimental challenge command*
+
+- **challenge on / off**: enables/disables viewer challenges queue (available to channel owner only)
+
+- **challenge [chess.com handle]**: join the queue to challenge the broadcaster to a game. players can only join the queue once and must wait until their name has been removed from the queue to join again.
+
+- **challenge next**: removes the player at the front of the queue and prints the next challenger name
+
+- **challenge queue**: prints the twitch names of players in the queue
+
+- **challenge clear**: clears the challenge queue (available to channel owner only)
+
+- **challenge info**: prints some usage info related to the challenge command
