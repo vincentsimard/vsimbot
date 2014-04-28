@@ -28,6 +28,6 @@ Its features are specific to chess.
 
 - **challenge queue**: prints the twitch names of players in the queue
 
-- **challenge clear**: clears the challenge queue (available to channel owner only)
+- **challenge clear**: removes the player from the queue. Clears the entire challenge queue if issued by the channel owner.
 
 - **challenge info**: prints some usage info related to the challenge command

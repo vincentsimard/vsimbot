@@ -31,7 +31,6 @@ var challenge = function(from, to, message, raw, match) {
 };
 
 var activeQueues = [];
-var startedQueues = [];
 var queues = {};
 
 var Account = function(twitchName, chessName) {
@@ -84,8 +83,24 @@ var commands = {
   },
 
   clear: function(from, to) {
-    if (!isChannelOwner(from, to)) { return; }
+    if (isChannelOwner(from, to)) {
+      this.clearQueue(to);
+    } else {
+      this.clearChallenger(from, to);
+    }
+  },
 
+  clearChallenger: function(from, to) {
+    queues[to] = _.filter(queues[to], function(account) {
+      return account.twitch !== from;
+    });
+
+    console.say(to, from + ', you have been removed from the queue.');    
+
+    // channelQueue = _.without(channelQueue, _.findWhere(channelQueue, { twitch: from }));
+  },
+
+  clearQueue: function(to) {
     queues[to] = [];
 
     console.say(to, 'Challenge queue cleared.');
@@ -116,21 +131,16 @@ var commands = {
     if (!isChannelOwner(from, to)) { return; }
     if (!isActive(to)) { return; }
 
-    var nextChallenger;
-
-    // The first 'next' issued on a challenge prints the first challenger
-    if (startedQueues.indexOf(to) > -1) {
-      queues[to].shift();
-    } else {
-      startedQueues.push(to);
-    }
-
-    if (queues[to].length > 0) {
-      nextChallenger = queues[to][0];
-      console.say(to, 'Next challenger: ' + nextChallenger.twitch + ' - http://chess.com/members/view/' + nextChallenger.chess);
-    } else {
+    if (queues[to].length === 0) {
       console.say(to, 'There is no one in the queue.');
+      return;
     }
+
+    var nextChallenger = queues[to][0];
+
+    console.say(to, 'Next challenger: ' + nextChallenger.twitch + ' - http://chess.com/members/view/' + nextChallenger.chess);
+
+    queues[to].shift();
   }
 };
 
