@@ -32,10 +32,10 @@ var watch = function(from, to, message, raw, match) {
 };
 
 var addAlert = function(to, handle) {
-  console.say(to, 'Alerts for "' + handle + '" enabled');
-
   ICC.finger(handle, function(exists, iccInfo, twitchName) {
     if (!exists) { return; }
+
+    console.say(to, 'Alerts for "' + handle + '" enabled');
 
     var previous = iccInfo.online;
 
