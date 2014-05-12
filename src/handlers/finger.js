@@ -65,6 +65,7 @@ var isBlacklisted = function(handle) {
     'black',
     'white',
     'he',
+    'she',
     'it',
     'your',
     'better',
