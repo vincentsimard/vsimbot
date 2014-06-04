@@ -11,7 +11,7 @@ var rule = function(from, to, message, raw, match) {
     'No sarcasm, or the emoticon associated with it!'
   ];
 
-  if (to !== "#amazingoid") { return; }
+  if (to !== "#amazingoid" || true) { return; }
   if (!(from === nconf.get('operator') || '#' + from === to)) { return; }
   if (isNaN(ruleNumber)) { return; }
   if (ruleNumber < 1 || ruleNumber > rules.length) { return; }

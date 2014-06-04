@@ -3,7 +3,7 @@
 var nconf = require('nconf');
 
 var winner = function(from, to, message, raw, match) {
-  if (to !== "#amazingoid") { return; }
+  if (to !== "#amazingoid" || true) { return; }
   if (!(from === nconf.get('operator') || '#' + from === to)) { return; }
 
   console.message("/!winner".input, to, from);
