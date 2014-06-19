@@ -2,8 +2,7 @@
 
 'use strict';
 
-// @TODO: Manage challenger queue
-// @TODO: Log network connection loss/disconnections
+// @TODO: Log network connection loss
 
 var nconf = require('nconf');
 var colors = require('colors');

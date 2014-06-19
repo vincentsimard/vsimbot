@@ -3,8 +3,6 @@
 var cheerio = require('cheerio');
 var request = require('request');
 
-// @TODO: Return more info from the finger page
-
 var ICC = {
   finger: function(handle, callback) {
     var self = this;

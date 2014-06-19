@@ -95,7 +95,6 @@ var EventHandlers = {
       client.addListener(events[i], self.common[events[i]]);
     }
 
-    // @TODO: Create a way to turn on/off modules from console
     // @TODO: http://jsperf.com/chsspttrns
     fs.readdirSync(handlersDir).forEach(function(file) {
       self.add(file, true);
