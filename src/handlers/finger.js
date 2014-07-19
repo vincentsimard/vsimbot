@@ -82,7 +82,8 @@ var isBlacklisted = function(handle) {
     'that',
     'up',
     'down',
-    'out'
+    'out',
+    'at'
   ];
   
   handle = handle.toLowerCase();
