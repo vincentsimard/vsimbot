@@ -19,7 +19,7 @@ var watch = function(from, to, message, raw, match) {
   handle = match[2];
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
-  console.message('/watch %s'.input, to, from, handle);
+  console.message('/alert %s'.input, to, from, handle);
 
   var watched = _.where(intervals, { channel: to, handle: handle });
   var isWatched = !!watched.length;
@@ -67,5 +67,5 @@ var removeAlert = function(to, handle, intervalObj) {
 
 
 module.exports.event = 'message#';
-module.exports.pattern = "^(watch)\\s([^\\s]+)";
+module.exports.pattern = "^(alert)\\s([^\\s]+)";
 module.exports.handler = watch;

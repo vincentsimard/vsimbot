@@ -16,7 +16,7 @@ Its features are specific to chess.
 
 - **eco [eco code]**: prints the name and moves of an opening
 
-- **watch [icc handle]**: enables alerts when a player goes online or offline on ICC (command only available to channel owner). use the same command to disable alerts.
+- **alert [icc handle]**: enables alerts when a player goes online or offline on ICC (command only available to channel owner). use the same command to disable alerts.
 
 *experimental challenge command*
 
