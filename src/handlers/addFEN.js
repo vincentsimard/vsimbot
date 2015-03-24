@@ -9,7 +9,7 @@ var addFEN = function(from, to, message, raw, match) {
   var url = 'http://lichess.org/editor/' + fen.replace(' ', '_');
   var text = 'The FEN posted by ' + from + ' is now available at: ' + url;
   
-  console.message('/lichess.FEN %s'.input, to, from, fen);
+  console.message('/lichess.addFEN %s'.input, to, from, fen);
   console.say(to, text);
 };
 
