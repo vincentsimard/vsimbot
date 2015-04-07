@@ -6,7 +6,7 @@ var Utils = require('./../Utils.js');
 var addFEN = function(from, to, message, raw, match) {
 
   var fen = match[0];
-  var url = 'http://lichess.org/editor/' + fen.replace(' ', '_');
+  var url = 'http://lichess.org/editor/' + fen.replace(/\s+/g, '_');
   var text = 'The FEN posted by ' + from + ' is now available at: ' + url;
   
   console.message('/lichess.addFEN %s'.input, to, from, fen);
