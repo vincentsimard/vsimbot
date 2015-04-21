@@ -10,7 +10,7 @@ Its features are specific to chess.
 
 - **[pgn] / [fen]**: posts the [pgn](http://en.wikipedia.org/wiki/Portable_Game_Notation) or [fen/epd](http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) to [lichess.org](http://lichess.org) and prints the url. The command only supports basic pgn—no variations or comments. The command is also known to not recognize some fen/epd strings. *e.g.: Look at this game! [Event "Kiel"] [Site "Kiel"] [Date "1893.??.??"] [Result "0-1"] [White "Lindemann"] [Black "Echtermeyer"] [ECO "B01"] 1.e4 d5 2.exd5 Qxd5 3.Ke2 Qe4# 0-1*
 
-- **join / part**: joins/parts your channel if the command is issued from this channel
+- **join / part**: joins/parts your channel if the command is issued from the bot's channel
 
 - **eval [fen]**: prints the engine evaluation of the position
 
