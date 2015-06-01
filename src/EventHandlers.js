@@ -29,10 +29,6 @@ var EventHandlers = {
     },
 
     join: function (channel, nick, message, callback) {
-      if (channel === '#yummyhat') {
-        console.say(channel, '/ban ' + nick);
-      }
-
       if (nick !== config.userName) { return; }
 
       console.log('*** joined %s'.irc, channel.bold);
