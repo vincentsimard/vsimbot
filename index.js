@@ -30,7 +30,10 @@ var init = function() {
   cli.init();
   handlers.init();
 
-  client.connect(function() { console.log('*** connected.'.info); });
+  client.connect(function() {
+    console.log('*** connected.'.info);
+    client.send('quote CAP REQ :twitch.tv/membership');
+  });
 };
 
 
