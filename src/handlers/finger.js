@@ -76,7 +76,7 @@ var isBlacklisted = function(handle) {
     'this',
     'in',
     'our',
-    'gonna',
+    'gnna',
     'more',
     'playing',
     'that',
@@ -87,7 +87,9 @@ var isBlacklisted = function(handle) {
     'on',
     'streaming',
     'there',
-    'to'
+    'to',
+    'penis',
+    'going'
   ];
   
   handle = handle.toLowerCase();
