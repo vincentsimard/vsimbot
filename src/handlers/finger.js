@@ -89,7 +89,9 @@ var isBlacklisted = function(handle) {
     'there',
     'to',
     'penis',
-    'going'
+    'going',
+    'vsim',
+    'vsimbot'
   ];
   
   handle = handle.toLowerCase();
