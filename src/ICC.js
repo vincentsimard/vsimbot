@@ -17,7 +17,7 @@ var ICC = {
 
       var $ = cheerio.load(html);
 
-      $('h1 + pre').map(function(i, element) {
+      $('pre').map(function(i, element) {
         var text = $(element).text();
 
         var lastDisconnectedRE = /\s\(Last\sdisconnected\s(.*)\)\:/;
