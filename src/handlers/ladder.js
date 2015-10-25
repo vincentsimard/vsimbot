@@ -46,8 +46,6 @@ var register = function(from, to, handle) {
   if (typeof ladders[to] === 'undefined') { ladders[to] = []; }
   ladders[to].push(new Account(from, handle));
 
-  console.log(JSON.stringify(ladders[to]));
-
   console.say(to, from + ' has registered to the ladder.');
 };
 
