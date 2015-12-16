@@ -52,6 +52,10 @@ var finger = function(from, to, message, raw, match) {
     // Not displaying anything if the account doesn't exist
     if (!exists) { return; }
 
+    if (to === '#yummyhat') {
+      iccInfo.name = 'Mike Kummer';
+    }
+
     FIDE.getProfileUrl(iccInfo.name, function(fideProfileUrl) {
       FIDE.getPlayerInfo(fideProfileUrl, function(fideInfo) {
         printFinger(handle, exists, iccInfo, fideInfo, twitchName);
