@@ -12,6 +12,11 @@ var finger = function(from, to, message, raw, match) {
   handle = match[2];
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
+  if (to === '#yummyhat') {
+    console.say(to, '"' + handle + '" is Mike Kummer http://ratings.fide.com/card.phtml?event=2065975. Follow him at http://twitch.tv/bigkumstlforever');
+    return;
+  }
+
   if (isBlacklisted(handle)) { return; }
 
   console.message('/icc.finger %s'.input, to, from, handle);
@@ -51,10 +56,6 @@ var finger = function(from, to, message, raw, match) {
   ICC.finger(handle, function(exists, iccInfo, twitchName) {
     // Not displaying anything if the account doesn't exist
     if (!exists) { return; }
-
-    if (to === '#yummyhat') {
-      iccInfo.name = 'Mike Kummer';
-    }
 
     FIDE.getProfileUrl(iccInfo.name, function(fideProfileUrl) {
       FIDE.getPlayerInfo(fideProfileUrl, function(fideInfo) {
