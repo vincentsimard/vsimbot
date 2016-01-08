@@ -12,8 +12,8 @@ var finger = function(from, to, message, raw, match) {
   handle = match[2];
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
-  if (to === '#yummyhat') {
-    console.say(to, '"' + handle + '" is Mike Kummer http://ratings.fide.com/card.phtml?event=2065975. Follow him at http://twitch.tv/bigkumstlforever');
+  if (to === '#yummyhat' && from !== 'yummyhat') {
+    console.say(to, '"' + handle + '" is Benjamin Finegold https://ratings.fide.com/card.phtml?event=2000261. Follow him at twitch.tv/saintlouischessclub');
     return;
   }
 
@@ -96,7 +96,8 @@ var isBlacklisted = function(handle) {
     'penis',
     'going',
     'vsim',
-    'vsimbot'
+    'vsimbot',
+    'being'
   ];
   
   handle = handle.toLowerCase();

@@ -39,7 +39,8 @@ var FIDE = {
         return id;
       };
 
-      googleResultUrl = $('#ires li h3 > a').first().attr('href');
+      googleResultUrl = $('#ires h3 > a').first().attr('href');
+
       id = getId(googleResultUrl);
 
       if (id.length) { profileUrl = profileBaseUrl + id; }
