@@ -3,6 +3,8 @@
 var nconf = require('nconf');
 var _ = require('underscore');
 
+var Lichess = require('./../Lichess.js');
+
 
 
 // Handles ladder registration
@@ -36,6 +38,7 @@ var Account = function(twitchName, lichessName) {
 
 var register = function(from, to, handle) {
   if (!isActive(to)) { return; }
+  if (handle.length > 25) { return; }
 
   // Check if already in ladder
   if (isInLadder(from, to)) {
@@ -43,10 +46,21 @@ var register = function(from, to, handle) {
     return;
   }
 
-  if (typeof ladders[to] === 'undefined') { ladders[to] = []; }
-  ladders[to].push(new Account(from, handle));
+  // Check for a valid chess.com account
+  accountExists(handle, function(data) {
+    data = data || {};
 
-  console.say(to, from + ' has registered to the ladder.');
+    if (data.warnings) { return; } // cheater.
+    if (!data.exists) {
+      console.say(to, from + ', ' + handle + ' is not a valid lichess.org account.');
+      return;
+    }
+
+    if (typeof ladders[to] === 'undefined') { ladders[to] = []; }
+    ladders[to].push(new Account(from, handle));
+
+    console.say(to, from + ' has registered to the ladder.');
+  });  
 };
 
 var commands = {
@@ -90,6 +104,8 @@ var commands = {
   },
 
   unregister: function(from, to) {
+    if (!isInLadder(from, to)) { return; }
+
     ladders[to] = _.filter(ladders[to], function(account) {
       return account.twitch !== from;
     });
@@ -109,6 +125,13 @@ var isActive = function(channel) {
 var isInLadder = function(from, to) {
   return _.pluck(ladders[to], 'twitch').indexOf(from) > -1;
 };
+
+var accountExists = function(handle, callback) {
+  Lichess.getPlayerInfo(handle, function(exists, info) {
+    callback(exists);
+  });
+};
+
 
 
 
