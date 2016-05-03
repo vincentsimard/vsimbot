@@ -97,7 +97,12 @@ var isBlacklisted = function(handle) {
     'going',
     'vsim',
     'vsimbot',
-    'being'
+    'being',
+    'gm',
+    'im',
+    'fm',
+    'cm',
+    'nm'
   ];
   
   handle = handle.toLowerCase();
