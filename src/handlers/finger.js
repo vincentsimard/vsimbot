@@ -102,7 +102,8 @@ var isBlacklisted = function(handle) {
     'im',
     'fm',
     'cm',
-    'nm'
+    'nm',
+    'winning'
   ];
   
   handle = handle.toLowerCase();
