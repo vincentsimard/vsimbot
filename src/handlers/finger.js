@@ -13,7 +13,7 @@ var finger = function(from, to, message, raw, match) {
   handle = handle.replace(/[^\w\s-]/gi, ''); // ICC handles must be alphanumeric
 
   if (to === '#yummyhat' && from !== 'yummyhat') {
-    console.say(to, '"' + handle + '" is Benjamin Finegold https://ratings.fide.com/card.phtml?event=2000261. Follow him at twitch.tv/saintlouischessclub');
+    console.say(to, '"' + handle + '" is Benjamin Finegold https://ratings.fide.com/card.phtml?event=2000261. Follow him at twitch.tv/saintlouischessclub', raw);
     return;
   }
 
@@ -50,7 +50,7 @@ var finger = function(from, to, message, raw, match) {
     if (fideInfo.url) { text += ' ' + fideInfo.url; }
     if (twitchName) { text += '. Follow him at http://twitch.tv/' + twitchName; }
 
-    console.say(to, text);
+    console.say(to, text, raw);
   };
 
   ICC.finger(handle, function(exists, iccInfo, twitchName) {

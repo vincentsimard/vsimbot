@@ -10,7 +10,7 @@ var addFEN = function(from, to, message, raw, match) {
   var text = 'The FEN posted by ' + from + ' is now available at: ' + url;
   
   console.message('/lichess.addFEN %s'.input, to, from, fen);
-  console.say(to, text);
+  console.say(to, text, raw);
 };
 
 module.exports.event = 'message#';

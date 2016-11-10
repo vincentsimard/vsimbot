@@ -7,14 +7,14 @@ var Utils = require('./../Utils.js');
 
 
 
-var doAprilsFool = function(to) {
+var doAprilsFool = function(to, raw) {
   var delay = Math.floor(Math.random()*20)/10 + 5;
 
   setTimeout(function() {
     var moves = Math.floor(Math.random()*50) + 37;
     var text = 'Mate in ' + moves + ' (time=' + delay + 's, depth=' + moves*2 + ')';
 
-    console.say(to, text);
+    console.say(to, text, raw);
   }, Math.floor(delay * 1000));
 };
 
@@ -30,7 +30,7 @@ var evalFEN = function(from, to, message, raw, match) {
 
   console.message('/eval %s'.input, to, from, fen);
 
-  // doAprilsFool(to);
+  // doAprilsFool(to, raw);
   // return;
 
   crafty.stderr.on('data', function (data) {
@@ -70,7 +70,7 @@ var evalFEN = function(from, to, message, raw, match) {
     if (mates) { text += mates; } // @TODO: Specify which color mates or gets mated
     if (mated) { text += mated; }
 
-    console.say(to, text);
+    console.say(to, text, raw);
   });
 
   // @TODO: Moves these options to a config file?

@@ -28,7 +28,7 @@ var addPGN = function(from, to, message, raw, match) {
       if (!error && response.statusCode == 303) {
         var url = 'http://lichess.org' + response.headers['location'];
         var text = 'The PGN posted by ' + from + ' is now available at: ' + url;
-        console.say(to, text);
+        console.say(to, text, raw);
       }
     }
   );

@@ -16,6 +16,17 @@ var EventHandlers = {
     "raw": function(message) { console.log(JSON.stringify(message)); },
     */
 
+    /* @TODO: Do something better for whispers */
+    "raw": function(message) {
+      if (message.command != 'WHISPER') { return; }
+
+      // message.rawCommand = 'PRIVMSG';
+      message.command = 'PRIVMSG';
+      message.args[0] = '#vsimbot';
+
+      client.emit('raw', message);
+    },
+
     error: function(message) {
       console.error('ERROR: %s: %s'.error, message.command, message.args.join(' '));
     },
