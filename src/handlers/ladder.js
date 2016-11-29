@@ -20,9 +20,9 @@ var ladder = function(from, to, message, raw, match) {
   if (fullMatch.length === 0) { return; }
 
   if (typeof commands[command] !== 'undefined') {
-    commands[command](from, to);
+    commands[command](from, to, raw);
   } else {
-    register(from, to, handle);
+    register(from, to, handle, raw);
   }
 };
 
@@ -36,13 +36,13 @@ var Account = function(twitchName, lichessName) {
   };
 };
 
-var register = function(from, to, handle) {
+var register = function(from, to, handle, raw) {
   if (!isActive(to)) { return; }
   if (handle.length > 25) { return; }
 
   // Check if already in ladder
   if (isInLadder(from, to)) {
-    console.say(to, from + ', you are already registered.');
+    console.say(to, from + ', you are already registered.', raw);
     return;
   }
 
@@ -52,14 +52,14 @@ var register = function(from, to, handle) {
 
     if (data.warnings) { return; } // cheater.
     if (!data.exists) {
-      console.say(to, from + ', ' + handle + ' is not a valid lichess.org account.');
+      console.say(to, from + ', ' + handle + ' is not a valid lichess.org account.', raw);
       return;
     }
 
     if (typeof ladders[to] === 'undefined') { ladders[to] = []; }
     ladders[to].push(new Account(from, handle));
 
-    console.say(to, from + ' has registered to the ladder.');
+    console.say(to, from + ' has registered to the ladder.', raw);
   });  
 };
 
@@ -82,13 +82,13 @@ var commands = {
     console.say(to, 'Ladder registration closed');
   },
 
-  info: function(from, to) {
+  info: function(from, to, raw) {
     var broadcaster = to.replace('#', '');
 
-    console.say(to, 'To join the ' + broadcaster + ' ladder, register by typing "ladder [lichess username]". The list of participants can be viewed by typing "ladder list". If you no longer wish to participate, type "ladder unregister".');
+    console.say(to, 'To join the ' + broadcaster + ' ladder, register by typing "ladder [lichess username]". The list of participants can be viewed by typing "ladder list". If you no longer wish to participate, type "ladder unregister".'. raw);
   },
 
-  list: function(from, to) {
+  list: function(from, to, raw) {
     if (!isActive(to)) { return; }
     
     var channelLadder = ladders[to];
@@ -100,17 +100,17 @@ var commands = {
       text = 'Participants: ' + _.pluck(channelLadder, 'lichess').join(', ');
     }
 
-    console.say(to, text);
+    console.say(to, text, raw);
   },
 
-  unregister: function(from, to) {
+  unregister: function(from, to, raw) {
     if (!isInLadder(from, to)) { return; }
 
     ladders[to] = _.filter(ladders[to], function(account) {
       return account.twitch !== from;
     });
 
-    console.say(to, from + ', you are no longer registered.');
+    console.say(to, from + ', you are no longer registered.', raw);
   },
 };
 

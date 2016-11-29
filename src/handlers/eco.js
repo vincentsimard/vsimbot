@@ -18,7 +18,7 @@ var printECO = function(from, to, message, raw, match) {
     text = eco + ' ' + name + ': ' + moves;
 
     // Print name and moves for the ECO
-    console.say(to, text);
+    console.say(to, text, raw);
   }
 };
 

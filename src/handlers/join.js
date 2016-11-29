@@ -41,7 +41,7 @@ var channelAction = function(from, message, raw, match) {
   });
 
   client[action](channel);
-  console.say(to, action + 'ing ' + channel);
+  console.say(to, action + 'ing ' + channel, raw);
 };
 
 

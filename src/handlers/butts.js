@@ -2,7 +2,6 @@
 
 var Utils = require('./../Utils.js');
 
-// post FEN to lichess.org
 var butts = function(from, to, message, raw, match) {
   if (!(to === '#yummyhat' && from === 'yummyhat')) { return; }
   

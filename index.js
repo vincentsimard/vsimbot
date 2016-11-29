@@ -33,6 +33,7 @@ var init = function() {
   client.connect(function() {
     console.log('*** connected.'.info);
     client.send('quote CAP REQ :twitch.tv/membership');
+    client.send('quote CAP REQ :twitch.tv/commands');
   });
 };
 

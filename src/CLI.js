@@ -69,7 +69,11 @@ console.message = function() {
   console.log.apply(this, args);
 };
 
-console.say = function(to, text) {
+console.say = function(to, text, raw) {
+  var isWhisper = function() { return typeof raw !== 'undefined' && raw.rawCommand === 'WHISPER'; }
+  var textPrefix = isWhisper() ? '/w ' + raw.user + ' ' : '';
+
+  text = textPrefix + text;
   client.say(to, text);
   console.message('%s', to, nconf.get('userName'), text);
 };
