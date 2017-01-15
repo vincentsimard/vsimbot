@@ -89,6 +89,7 @@ var isBlacklisted = function(handle) {
     'down',
     'out',
     'at',
+    'an',
     'on',
     'streaming',
     'there',
