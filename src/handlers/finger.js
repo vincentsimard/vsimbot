@@ -56,7 +56,8 @@ var finger = function(from, to, message, raw, match) {
   };
 
   // @TODO: Remove this duplication. Yuck
-  if (to === '#chess' || to === '#vsimbot') {
+  // @TODO: Enable channels to toggle finger mode to icc or chesscom
+  if (to === '#chess') {
     Chesscom.getPlayerInfo(handle, function(exists, chesscomInfo) {
       // Not displaying anything if the account doesn't exist
       if (!exists) { return; }
