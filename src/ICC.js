@@ -10,7 +10,7 @@ var ICC = {
 
     var parseFinger = function(err, response, html) {
       var exists, name, groups, title, twitchName;
-      var lists = ['known', 'suspected'];
+      var lists = ['knownicc', 'suspected'];
       var info = {};
 
       if (err) { return console.error(err); }
@@ -41,7 +41,7 @@ var ICC = {
         info.groups = groupsMatches ? groupsMatches[2] : undefined;
         info.title  = self.getTitle(info.groups);
 
-        // Mixing boolean and string enum is not great (current values: true, false, public, known, suspected)
+        // Mixing boolean and string enum is not great (current values: true, false, public, knownicc, knownchesscom, suspected)
         if (exists) { exists = info.name ? 'public' : 'notpublic'; }
       });
 

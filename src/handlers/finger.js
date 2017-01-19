@@ -2,6 +2,7 @@
 
 var ICC = require('./../ICC.js');
 var FIDE = require('./../FIDE.js');
+var Chesscom = require('./../Chesscom.js');
 
 
 
@@ -19,8 +20,8 @@ var finger = function(from, to, message, raw, match) {
 
   if (isBlacklisted(handle)) { return; }
 
-  console.message('/icc.finger %s'.input, to, from, handle);
-  
+  console.message('/finger %s'.input, to, from, handle);
+
   var printFinger = function(handle, exists, iccInfo, fideInfo, twitchName) {
     if (!iccInfo)  { iccInfo  = {}; }
     if (!fideInfo) { fideInfo = {}; }
@@ -39,10 +40,11 @@ var finger = function(from, to, message, raw, match) {
     titleAndName = (title ? title + ' ' : '') + (iccInfo.name ? iccInfo.name : '');
 
     switch (exists) {
-      case 'public':    text += ' is ' + titleAndName; break;
-      case 'known':     text += ' is ' + titleAndName; break;
-      case 'suspected': text += ' is allegedly ' + titleAndName; break;
-      case 'notpublic': text = 'No public info for "' + handle + '"'; break;
+      case 'public':        text += ' is ' + titleAndName; break;
+      case 'knownicc':      text += ' is ' + titleAndName; break;
+      case 'knownchesscom': text += ' is ' + titleAndName; break;
+      case 'suspected':     text += ' is allegedly ' + titleAndName; break;
+      case 'notpublic':     text = 'No public info for "' + handle + '"'; break;
       default: text = '';
     }
 
@@ -53,16 +55,30 @@ var finger = function(from, to, message, raw, match) {
     console.say(to, text, raw);
   };
 
-  ICC.finger(handle, function(exists, iccInfo, twitchName) {
-    // Not displaying anything if the account doesn't exist
-    if (!exists) { return; }
+  // @TODO: Remove this duplication. Yuck
+  if (to === '#chess' || to === '#vsimbot') {
+    Chesscom.getPlayerInfo(handle, function(exists, chesscomInfo) {
+      // Not displaying anything if the account doesn't exist
+      if (!exists) { return; }
 
-    FIDE.getProfileUrl(iccInfo.name, function(fideProfileUrl) {
-      FIDE.getPlayerInfo(fideProfileUrl, function(fideInfo) {
-        printFinger(handle, exists, iccInfo, fideInfo, twitchName);
+      FIDE.getProfileUrl(chesscomInfo.name, function(fideProfileUrl) {
+        FIDE.getPlayerInfo(fideProfileUrl, function(fideInfo) {
+          printFinger(handle, exists, chesscomInfo, fideInfo);
+        });
       });
     });
-  });
+  } else {
+    ICC.finger(handle, function(exists, iccInfo, twitchName) {
+      // Not displaying anything if the account doesn't exist
+      if (!exists) { return; }
+
+      FIDE.getProfileUrl(iccInfo.name, function(fideProfileUrl) {
+        FIDE.getPlayerInfo(fideProfileUrl, function(fideInfo) {
+          printFinger(handle, exists, iccInfo, fideInfo, twitchName);
+        });
+      });
+    });
+  }
 };
 
 var isBlacklisted = function(handle) {

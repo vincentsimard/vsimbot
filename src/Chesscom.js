@@ -10,11 +10,12 @@ var Chesscom = {
   getProfileUrl: function(handle) {
     if (!handle) { return; }
 
-    return 'http://chess.com/members/view/' + handle;
+    return 'http://chess.com/member/' + handle;
   },
 
   getPlayerInfo: function(handle, callback) {
     var self = this;
+    var lists = ['knownchesscom'];
     var url = this.getProfileUrl(handle);
 
     if (typeof handle === 'undefined') {
@@ -26,33 +27,30 @@ var Chesscom = {
       if (err) { return console.error(err); }
 
       var $ = cheerio.load(html);
-      var title = $('title').text().toLowerCase();
-      var exists = true;
+      var exists = false;
       var info = {};
+      var statusCode = response.statusCode;
 
-      var getRatingByClassName = function(className) {
-        // @TODO: This traversing is a bit silly
-        return $('.ratings ' + className).parent().parent().find('div.right').first().text().trim();
-      };
-
-      if (title === 'members - chess.com') { exists = false; }
-      if (title === 'account closed - chess.com') { exists = false; }
-      // if (title === 'member: ' + handle + ' - chess.com') { exists = true; }
+      if (statusCode >= 200 && statusCode < 300) { exists = true; }
 
       if (exists) {
-        info.name = $('h1.user-profile-title + p > strong').text().trim();
-        info.title = $('h1.user-profile-title a[href="/members/titled_players"]').text().trim();
-        info.country = $('.user-left-sidebar .flag').attr('title');
-        info.location = $('.user-left-sidebar .bottom-12').text().trim();
+        info.name = $('.profile-card .overview .details div:first-of-type').text().trim();
+        info.title = $('.profile-card .overview h2 .user-chess-title').text().trim();
+        info.country = $('.country-flag').attr('tip');
 
-        info.ratings = {};
-        info.ratings.std = getRatingByClassName('.standard-chess');
-        info.ratings.blitz = getRatingByClassName('.blitz-chess');
-        info.ratings.bullet = getRatingByClassName('.bullet-chess');
-        info.ratings.chess960 = getRatingByClassName('.c960');
-        info.ratings.online = getRatingByClassName('.chess-play-email');
-        info.ratings.tactics = getRatingByClassName('.trainer');
-        info.ratings.mentor = getRatingByClassName('.conditional');
+        // Mixing boolean and string enum is not great (current values: true, false, public, knownicc, knownchesscom, suspected)
+        if (exists) { exists = info.name ? 'public' : 'notpublic'; }
+      }
+
+      if (!info.name) {
+        for (var i = 0; i < lists.length; i++) {
+          info.name = self.lookupPlayer(handle, lists[i]);
+
+          if (info.name) {
+            exists = lists[i];
+            break;
+          }
+        }
       }
 
       info.url = url;
@@ -61,6 +59,14 @@ var Chesscom = {
     };
 
     request.get(url, parseProfile);
+  },
+
+  lookupPlayer: function(handle, list) {
+    var players = require('./data/' + list + '.json');
+
+    handle = handle.toLowerCase();
+
+    if (handle in players) { return players[handle]; }
   }
 };
 
