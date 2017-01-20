@@ -7,6 +7,7 @@ var client = require('./Client.js');
 
 var config;
 var loadedHandlers = {};
+var loadedDiscordHandlers = {};
 
 var EventHandlers = {
   // Common IRC events
@@ -24,7 +25,7 @@ var EventHandlers = {
       message.command = 'PRIVMSG';
       message.args[0] = '#vsimbot';
 
-      client.emit('raw', message);
+      client.irc.emit('raw', message);
     },
 
     error: function(message) {
@@ -49,7 +50,7 @@ var EventHandlers = {
       if (nick !== config.userName) { return; }
 
       console.log('*** parted %s'.irc, channel.bold);
-    }
+    },
   },
 
   add: function(file, quiet) {
@@ -76,9 +77,30 @@ var EventHandlers = {
       }
     };
 
-    loadedHandlers[file] = handler;
+    var discordHandler = function() {
+      var args = Array.prototype.slice.call(arguments, 0)[0];
+      var message = args.content;
+      var match = message.match(new RegExp(module.pattern, "i"));
 
-    client.addListener(module.event, loadedHandlers[file]);
+      if (typeof module.event === 'undefined') { return; }
+      if (typeof module.pattern === 'undefined') { return; }
+      if (typeof module.handler === 'undefined') { return; }
+
+      if (typeof module.condition === 'function') {
+        if (!module.condition(message)) { return; }
+      }
+
+      if (match) {
+        args.discord = true;
+        module.handler.apply(this, [args.author.username, args.channel.name, message, args, match]);
+      }
+    };
+
+    loadedHandlers[file] = handler;
+    loadedDiscordHandlers[file] = discordHandler;
+
+    client.irc.addListener(module.event, loadedHandlers[file]);
+    client.discord.on('message', loadedDiscordHandlers[file]);
 
     if (!quiet) { console.log('Added module: ' + file); }
   },
@@ -90,7 +112,7 @@ var EventHandlers = {
 
     if (typeof module.event === 'undefined') { return; }
 
-    client.removeListener(module.event, loadedHandlers[file]);
+    client.irc.removeListener(module.event, loadedHandlers[file]);
 
     if (!quiet) { console.log('Removed module: ' + file); }
   },
@@ -103,12 +125,18 @@ var EventHandlers = {
     config = nconf.get();
 
     for (var i=0; i<events.length; i++) {
-      client.addListener(events[i], self.common[events[i]]);
+      client.irc.addListener(events[i], self.common[events[i]]);
     }
 
     // @TODO: http://jsperf.com/chsspttrns
     fs.readdirSync(handlersDir).forEach(function(file) {
       self.add(file, true);
+    });
+
+    client.discord.on('message', function(message) {
+      if (message.content === 'ping') {
+        message.reply('pong');
+      }
     });
   }
 };

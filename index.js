@@ -30,11 +30,18 @@ var init = function() {
   cli.init();
   handlers.init();
 
-  client.connect(function() {
-    console.log('*** connected.'.info);
-    client.send('quote CAP REQ :twitch.tv/membership');
-    client.send('quote CAP REQ :twitch.tv/commands');
+  // IRC client
+  client.irc.connect(function() {
+    console.log('*** connected to IRC server.'.info);
+    client.irc.send('quote CAP REQ :twitch.tv/membership');
+    client.irc.send('quote CAP REQ :twitch.tv/commands');
   });
+
+  // Discord client
+  client.discord.on('ready', function() {
+    console.log('*** connected to Discord server.'.info);
+  });
+  client.discord.login(config.discordToken);
 };
 
 

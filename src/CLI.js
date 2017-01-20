@@ -6,10 +6,10 @@ var client = require('./Client.js');
 var handlers = require('./EventHandlers.js');
 
 var commands = {
-  connect: function() { client.connect(function() { console.log('*** connected.'.info); }); },
-  disconnect: function() { client.disconnect(); },
-  join: function(channel) { client.join(channel); },
-  part: function(channel) { client.part(channel); },
+  connect: function() { client.irc.connect(function() { console.log('*** connected.'.info); }); },
+  disconnect: function() { client.irc.disconnect(); },
+  join: function(channel) { client.irc.join(channel); },
+  part: function(channel) { client.irc.part(channel); },
   say: function(args) {
     var matches = args.match(/^(#\w+)\s(.*)/); // #[channelname] [message]
     var channel, message;
@@ -19,9 +19,9 @@ var commands = {
     channel = matches[1];
     message = matches[2];
 
-    client.say(channel, message);
+    client.irc.say(channel, message);
   },
-  channels: function() { console.log(_.keys(client.chans)); },
+  channels: function() { console.log(_.keys(client.irc.chans)); },
   addHandler: handlers.add,
   removeHandler: handlers.remove
 };
@@ -74,7 +74,13 @@ console.say = function(to, text, raw) {
   var textPrefix = isWhisper() ? '/w ' + raw.user + ' ' : '';
 
   text = textPrefix + text;
-  client.say(to, text);
+
+  if (raw.discord) {
+    raw.reply(text);
+  } else {
+    client.irc.say(to, text);
+  }
+  
   console.message('%s', to, nconf.get('userName'), text);
 };
 
