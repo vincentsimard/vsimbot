@@ -1,5 +1,7 @@
 'use strict';
 
+var nconf = require('nconf');
+
 var ICC = require('./../ICC.js');
 var FIDE = require('./../FIDE.js');
 var Chesscom = require('./../Chesscom.js');
@@ -55,9 +57,15 @@ var finger = function(from, to, message, raw, match) {
     console.say(to, text, raw);
   };
 
+  var isChesscomFinger = function(channel) {
+    var channels = nconf.get('channelsChesscomFinger');
+
+    return channels.indexOf(channel) >= 0;
+  };
+
   // @TODO: Remove this duplication. Yuck
   // @TODO: Enable channels to toggle finger mode to icc or chesscom
-  if (to === '#chess' || to === '#manneredmonkey') {
+  if (isChesscomFinger(to)) {
     Chesscom.getPlayerInfo(handle, function(exists, chesscomInfo) {
       // Not displaying anything if the account doesn't exist
       if (!exists) { return; }

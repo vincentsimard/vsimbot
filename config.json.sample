@@ -2,6 +2,10 @@
   "operator": "vsim",
   "server": "irc.twitch.tv",
   "channels": [],
+  "channelsChesscomFinger": [
+    "#chess",
+    "#chesscom_echecs"
+  ],
   "userName": "",
   "realName": "",
   "password": "",
