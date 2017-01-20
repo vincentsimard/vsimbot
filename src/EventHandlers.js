@@ -53,16 +53,20 @@ var EventHandlers = {
     },
   },
 
-  add: function(file, quiet) {
+  add: function(file, quiet, discord) {
     var self = this;
     var handlersDir = __dirname + '/handlers';
     var module = require(handlersDir + '/' + file);
 
     var handler = function() {
-      var args = Array.prototype.slice.call(arguments, 0);
-      var message = args[args.length-2];
-      var match = message.match(new RegExp(module.pattern, "i"));
+      var args, message, match;
+      args = Array.prototype.slice.call(arguments, 0);
+      args = discord ? args[0] : args;
+      args.discord = discord;
+      message = discord ? args.content : args[args.length-2];
+      match = message.match(new RegExp(module.pattern, "i"));
 
+      if (!match) { return; }
       if (typeof module.event === 'undefined') { return; }
       if (typeof module.pattern === 'undefined') { return; }
       if (typeof module.handler === 'undefined') { return; }
@@ -71,36 +75,21 @@ var EventHandlers = {
         if (!module.condition(message)) { return; }
       }
 
-      if (match) {
+      if (discord) {
+        module.handler.apply(this, [args.author.username, args.channel.name, message, args, match]);
+      } else {
         args.push(match);
         module.handler.apply(this, args);
       }
     };
 
-    var discordHandler = function() {
-      var args = Array.prototype.slice.call(arguments, 0)[0];
-      var message = args.content;
-      var match = message.match(new RegExp(module.pattern, "i"));
-
-      if (typeof module.event === 'undefined') { return; }
-      if (typeof module.pattern === 'undefined') { return; }
-      if (typeof module.handler === 'undefined') { return; }
-
-      if (typeof module.condition === 'function') {
-        if (!module.condition(message)) { return; }
-      }
-
-      if (match) {
-        args.discord = true;
-        module.handler.apply(this, [args.author.username, args.channel.name, message, args, match]);
-      }
-    };
-
     loadedHandlers[file] = handler;
-    loadedDiscordHandlers[file] = discordHandler;
 
-    client.irc.addListener(module.event, loadedHandlers[file]);
-    client.discord.on('message', loadedDiscordHandlers[file]);
+    if (discord) {
+      client.discord.on('message', handler);
+    } else {
+      client.irc.addListener(module.event, handler);
+    }
 
     if (!quiet) { console.log('Added module: ' + file); }
   },
@@ -131,6 +120,7 @@ var EventHandlers = {
     // @TODO: http://jsperf.com/chsspttrns
     fs.readdirSync(handlersDir).forEach(function(file) {
       self.add(file, true);
+      self.add(file, true, true);
     });
   }
 };
