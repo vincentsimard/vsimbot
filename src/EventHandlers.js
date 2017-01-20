@@ -132,12 +132,6 @@ var EventHandlers = {
     fs.readdirSync(handlersDir).forEach(function(file) {
       self.add(file, true);
     });
-
-    client.discord.on('message', function(message) {
-      if (message.content === 'ping') {
-        message.reply('pong');
-      }
-    });
   }
 };
 
