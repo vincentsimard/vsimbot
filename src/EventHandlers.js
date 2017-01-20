@@ -6,8 +6,6 @@ var fs = require("fs");
 var client = require('./Client.js');
 
 var config;
-var loadedHandlers = {};
-var loadedDiscordHandlers = {};
 
 var EventHandlers = {
   // Common IRC events
@@ -53,7 +51,7 @@ var EventHandlers = {
     },
   },
 
-  add: function(file, quiet, discord) {
+  add: function(file, discord) {
     var self = this;
     var handlersDir = __dirname + '/handlers';
     var module = require(handlersDir + '/' + file);
@@ -83,27 +81,11 @@ var EventHandlers = {
       }
     };
 
-    loadedHandlers[file] = handler;
-
     if (discord) {
       client.discord.on('message', handler);
     } else {
       client.irc.addListener(module.event, handler);
     }
-
-    if (!quiet) { console.log('Added module: ' + file); }
-  },
-
-  remove: function(file, quiet) {
-    var self = this;
-    var handlersDir = __dirname + '/handlers';
-    var module = require(handlersDir + '/' + file);
-
-    if (typeof module.event === 'undefined') { return; }
-
-    client.irc.removeListener(module.event, loadedHandlers[file]);
-
-    if (!quiet) { console.log('Removed module: ' + file); }
   },
 
   init: function() {
@@ -119,8 +101,8 @@ var EventHandlers = {
 
     // @TODO: http://jsperf.com/chsspttrns
     fs.readdirSync(handlersDir).forEach(function(file) {
+      self.add(file);
       self.add(file, true);
-      self.add(file, true, true);
     });
   }
 };

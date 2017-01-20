@@ -21,9 +21,7 @@ var commands = {
 
     client.irc.say(channel, message);
   },
-  channels: function() { console.log(_.keys(client.irc.chans)); },
-  addHandler: handlers.add,
-  removeHandler: handlers.remove
+  channels: function() { console.log(_.keys(client.irc.chans)); }
 };
 
 var CLI = {
