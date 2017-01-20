@@ -3,7 +3,6 @@
 var nconf = require('nconf');
 var _ = require('underscore');
 var client = require('./Client.js');
-var handlers = require('./EventHandlers.js');
 
 var commands = {
   connect: function() { client.irc.connect(function() { console.log('*** connected.'.info); }); },
