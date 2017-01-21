@@ -74,6 +74,8 @@ var EventHandlers = {
       }
 
       if (discord) {
+        if (config.userName === args.author.username) { return; }
+        
         module.handler.apply(this, [args.author.username, args.channel.name, message, args, match]);
       } else {
         args.push(match);
