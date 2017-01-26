@@ -5,8 +5,14 @@ var client = require('./../Client.js');
 
 
 
+var isTwitch = function(raw) {
+  return raw.host && raw.host.indexOf("twitch.tv") >= 0;
+}
+
 // join/part channel and save to config
 var channelAction = function(from, message, raw, match) {
+  if (!isTwitch(raw)) { return; }
+
   var to = '#' + nconf.get('userName');
   var action = match[1];
   var channel = '#' + from;
@@ -40,7 +46,8 @@ var channelAction = function(from, message, raw, match) {
     if (err) { return console.error(err); }
   });
 
-  client[action](channel);
+  // @TODO: Crashes when action is part and the bot is not in the channel
+  client.irc[action](channel);
   console.say(to, action + 'ing ' + channel, raw);
 };
 
