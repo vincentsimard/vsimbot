@@ -27,7 +27,7 @@
     "irc": "~0.3.6",
     "moment": "~2.5.1",
     "nconf": "~0.6.9",
-    "request": "~2.81.0",
+    "request": "~2.88.0",
     "underscore": "^1.6.0"
   },
   "devDependencies": {
